@@ -1,0 +1,90 @@
+/* ==================================================================
+   School SaaS Responsive Layout Stylesheet
+   Centralized Breakpoint Media Queries
+   ================================================================== */
+
+/* Tablet & Smaller Layout (max-width: 991px) */
+@media (max-width: 991px) {
+  .app-sidebar {
+    --sidebar-width: 260px !important;
+    width: var(--sidebar-width) !important;
+    left: calc(-1 * var(--sidebar-width));
+    height: 100vh;
+    top: 0;
+    z-index: 110;
+    box-shadow: var(--shadow-lg);
+    padding-top: 0 !important;
+  }
+  .main-wrapper {
+    padding-left: 0;
+  }
+  .topbar-brand {
+    margin-left: 2.5rem; /* Make room for the toggle button */
+  }
+  .topbar-menu-pill {
+    display: none; /* Hide topbar menu pill in mid resolution */
+  }
+
+  /* Reveal Mobile Sidebar */
+  .app-layout.mobile-sidebar-active .app-sidebar {
+    left: 0;
+  }
+  .app-layout.mobile-sidebar-active .sidebar-brand-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 0.5rem;
+  }
+  .app-layout.mobile-sidebar-active .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .content-area {
+    padding: 1.5rem 1rem;
+  }
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
+
+/* Mobile Viewports (xs/sm, < 768px) */
+@media (max-width: 767px) {
+  .topbar-brand .brand-text {
+    display: none; /* Hide logo text to save space */
+  }
+  .profile-info {
+    display: none; /* Hide profile text metadata */
+  }
+  .balance-actions {
+    grid-template-columns: 1fr;
+  }
+  .cc-card-blue {
+    left: 50px;
+  }
+  .table-search-box {
+    width: 120px;
+  }
+}
+
+/* Profile card layout columns divider for full width view */
+@media (min-width: 768px) {
+  .profile-left-col {
+    border-bottom: 0;
+    border-right: 1px solid #e2e8f0;
+    padding-bottom: 0;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Auth split layout details */
+@media (min-width: 992px) {
+  .auth-info-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,402 @@
+﻿Auditing 23 files...
+
+FILE: \modules\school\fees\collected-log.php (Line 66)
+Query: $stmt_count = $pdo->prepare(" SELECT COUNT(*) FROM fee_payments fp JOIN students s ON fp.student_id = s.id $where ");
+Tables involved: fee_payments, students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\collection-report.php (Line 65)
+Query: $stmt_c = $pdo->prepare("SELECT COUNT(*) FROM fee_payments fp JOIN students s ON fp.student_id=s.id $where");
+Tables involved: fee_payments, students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 267)
+Query: $stmt_f = $pdo->prepare(" SELECT * FROM student_fee_items WHERE student_id = :student_id ORDER BY id ASC ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 309)
+Query: $stmt_del = $pdo->prepare("DELETE FROM student_fee_items WHERE student_id = :student_id");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 315)
+Query: $stmt_ins = $pdo->prepare(" INSERT INTO student_fee_items ( student_id, fee_name, fee_type, apply_to, linked_to, amount, discount_type, discount_amount, paid_amount, remark, is_active, route_details ) VALUES ( :student_id, :fee_name, :fee_type, :apply_to, :linked_to, :amount, :discount_type, :discount_amount, :paid_amount, :remark, :is_active, :route_details ) ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 354)
+Query: $stmt_upd = $pdo->prepare(" UPDATE students SET total_fees = :total_fees, total_discount = :total_discount WHERE id = :student_id ");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 394)
+Query: $stmt_del = $pdo->prepare("DELETE FROM student_fee_items WHERE student_id = :student_id");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 397)
+Query: $stmt_upd = $pdo->prepare(" UPDATE students SET total_fees = 0.00, total_paid = 0.00, total_discount = 0.00, fine_amount = 0.00 WHERE id = :student_id ");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 475)
+Query: $stmt_f = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id = :student_id AND is_active = 1 ORDER BY id ASC");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 508)
+Query: $update_item_stmt = $pdo->prepare("UPDATE student_fee_items SET paid_amount = :paid_amount WHERE id = :id");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 525)
+Query: $stmt_sum = $pdo->prepare("SELECT SUM(paid_amount) FROM student_fee_items WHERE student_id = :student_id AND is_active = 1");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 529)
+Query: $stmt_upd_stud = $pdo->prepare(" UPDATE students SET total_paid = :total_paid WHERE id = :student_id ");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\defaulters.php (Line 660)
+Query: $stmt_count = $pdo->prepare(" SELECT COUNT(*) FROM students s JOIN users u ON s.user_id = u.id $where ");
+Tables involved: students, users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\fees-structure-report.php (Line 20)
+Query: $stmt_banner = $pdo->prepare(" SELECT SUM(sfi.amount) AS gross_fees, SUM(sfi.discount_amount) AS head_discount, SUM(sfi.amount - COALESCE(sfi.discount_amount,0)) AS final_fees, SUM(sfi.paid_amount) AS paid_fine, SUM(sfi.amount - COALESCE(sfi.discount_amount,0)) AS gross_total, 0 AS fees_discount, 0 AS fine_discount, SUM(sfi.discount_amount) AS total_discount, SUM(sfi.paid_amount) AS paid_fees, 0 AS paid_fine2, SUM(sfi.paid_amount) AS total_paid, SUM(sfi.amount - COALESCE(sfi.discount_amount,0) - COALESCE(sfi.paid_amount,0)) AS balance FROM student_fee_items sfi JOIN students s ON sfi.student_id = s.id
+Tables involved: students, student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\fees-structure-report.php (Line 61)
+Query: $stmt_summary = $pdo->prepare(" SELECT sfi.fee_name AS fees_type, SUM(sfi.amount) AS total_fees, SUM(sfi.discount_amount) AS discount_head, SUM(sfi.amount - COALESCE(sfi.discount_amount,0)) AS final_fees, 0 AS fine, SUM(sfi.amount - COALESCE(sfi.discount_amount,0)) AS gross_total, 0 AS fees_discount, 0 AS fine_discount, SUM(sfi.discount_amount) AS total_discount, SUM(sfi.paid_amount) AS paid_fees, 0 AS paid_fine, SUM(sfi.paid_amount) AS total_paid, SUM(sfi.amount - COALESCE(sfi.discount_amount,0) - COALESCE(sfi.paid_amount,0)) AS balance FROM student_fee_items sfi
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\fees-structure.php (Line 60)
+Query: $stmt_ins = $pdo->prepare(" INSERT INTO student_fee_items (student_id, fee_name, fee_type, apply_to, linked_to, amount, is_active) VALUES (:student_id, :fee_name, :fee_type, :apply_to, :linked_to, :amount, :is_active) ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\fees-structure.php (Line 191)
+Query: $stmt_ins = $pdo->prepare(" INSERT INTO student_fee_items (student_id, fee_name, fee_type, apply_to, linked_to, amount, is_active) VALUES (:student_id, :fee_name, :fee_type, :apply_to, :linked_to, :amount, :is_active) ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\fees-structure.php (Line 239)
+Query: $stmt_ins_single = $pdo->prepare(" INSERT INTO student_fee_items (student_id, fee_name, fee_type, apply_to, linked_to, amount, is_active) VALUES (:student_id, :fee_name, :fee_type, :apply_to, :linked_to, :amount, 1) ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 267)
+Query: $stmt_f = $pdo->prepare(" SELECT * FROM student_fee_items WHERE student_id = :student_id ORDER BY id ASC ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 309)
+Query: $stmt_del = $pdo->prepare("DELETE FROM student_fee_items WHERE student_id = :student_id");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 315)
+Query: $stmt_ins = $pdo->prepare(" INSERT INTO student_fee_items ( student_id, fee_name, fee_type, apply_to, linked_to, amount, discount_type, discount_amount, paid_amount, remark, is_active, route_details ) VALUES ( :student_id, :fee_name, :fee_type, :apply_to, :linked_to, :amount, :discount_type, :discount_amount, :paid_amount, :remark, :is_active, :route_details ) ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 354)
+Query: $stmt_upd = $pdo->prepare(" UPDATE students SET total_fees = :total_fees, total_discount = :total_discount WHERE id = :student_id ");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 394)
+Query: $stmt_del = $pdo->prepare("DELETE FROM student_fee_items WHERE student_id = :student_id");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 397)
+Query: $stmt_upd = $pdo->prepare(" UPDATE students SET total_fees = 0.00, total_paid = 0.00, total_discount = 0.00, fine_amount = 0.00 WHERE id = :student_id ");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 475)
+Query: $stmt_f = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id = :student_id AND is_active = 1 ORDER BY id ASC");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 508)
+Query: $update_item_stmt = $pdo->prepare("UPDATE student_fee_items SET paid_amount = :paid_amount WHERE id = :id");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 525)
+Query: $stmt_sum = $pdo->prepare("SELECT SUM(paid_amount) FROM student_fee_items WHERE student_id = :student_id AND is_active = 1");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 529)
+Query: $stmt_upd_stud = $pdo->prepare(" UPDATE students SET total_paid = :total_paid WHERE id = :student_id ");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\index.php (Line 663)
+Query: $stmt_count = $pdo->prepare(" SELECT COUNT(*) FROM students s JOIN users u ON s.user_id = u.id $where ");
+Tables involved: students, users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\monthly-fees-collection.php (Line 38)
+Query: $stmt_st = $pdo->prepare("SELECT id FROM students WHERE class_id = :class_id AND deleted_at IS NULL");
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\monthly-fees-collection.php (Line 44)
+Query: $stmt_fi = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id IN ($in_clause) AND is_active = 1");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\student-fees-structure.php (Line 56)
+Query: $stmt_cnt = $pdo->prepare(" SELECT COUNT(*) FROM students s LEFT JOIN users u ON s.user_id = u.id $where ");
+Tables involved: students, users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\student-fees-structure.php (Line 67)
+Query: $stmt_s = $pdo->prepare(" SELECT s.*, u.username AS u_name, c.name AS class_name, sec.name AS section_name FROM students s LEFT JOIN users u ON s.user_id = u.id LEFT JOIN classes c ON s.class_id = c.id LEFT JOIN sections sec ON s.section_id = sec.id $where ORDER BY s.first_name ASC, s.last_name ASC LIMIT :lim OFFSET :off ");
+Tables involved: classes, sections, students, users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\student-fees-structure.php (Line 89)
+Query: $stmt_fi = $pdo->query(" SELECT student_id, fee_name, amount, discount_amount, paid_amount, is_active FROM student_fee_items WHERE student_id IN ($in) ORDER BY fee_name ASC ");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\transport-structure.php (Line 281)
+Query: $stmt_cnt = $pdo->prepare("SELECT COUNT(*) FROM transport_routes r $where");
+Tables involved: transport_routes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\fees\transport-structure.php (Line 287)
+Query: $stmt_r = $pdo->prepare(" SELECT r.*, COUNT(s.id) AS student_count FROM transport_routes r LEFT JOIN students s ON s.transport_route_id = r.id AND s.deleted_at IS NULL $where GROUP BY r.id ORDER BY r.id DESC LIMIT :lim OFFSET :off ");
+Tables involved: students, transport_routes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 53)
+Query: $pdo->prepare("UPDATE parents SET status = :status WHERE id = :id")->execute([':status' => $new_status, ':id' => $parent_id]);
+Tables involved: parents
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 54)
+Query: $pdo->prepare("UPDATE users SET status = :status WHERE id = :user_id")->execute([':status' => $user_status, ':user_id' => $parent['user_id']]);
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 76)
+Query: $pdo->prepare("UPDATE parents SET deleted_at = :now WHERE id = :id")->execute([':now' => $now, ':id' => $parent_id]);
+Tables involved: parents
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 132)
+Query: $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 225)
+Query: $stmt_u = $pdo->prepare("UPDATE users SET first_name = :first_name, last_name = :last_name, email = :email, phone = :phone, gender = :gender WHERE id = :id");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 229)
+Query: $stmt_p = $pdo->prepare("UPDATE parents SET first_name = :first_name, last_name = :last_name, mobile = :mobile, alternate_mobile = :alternate_mobile, whatsapp_no = :whatsapp_no, email = :email, gender = :gender, parent_type = :parent_type, aadhaar_no = :aadhaar_no, qualification = :qualification, designation = :designation, company_name = :company_name, company_address = :company_address, company_phone = :company_phone, address = :address, pincode = :pincode, city = :city, state = :state, country = :country WHERE id = :id");
+Tables involved: parents
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\index.php (Line 279)
+Query: $stmt_count = $pdo->prepare("SELECT COUNT(*) FROM parents p $where");
+Tables involved: parents
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\parents\view.php (Line 28)
+Query: $stmt_s = $pdo->prepare(" SELECT s.id, s.first_name, s.last_name, s.roll_no, c.name as class_name, sec.name as section_name, s.photo, s.gender, s.admission_no_prefix, s.admission_no FROM students s JOIN parent_students ps ON s.id = ps.student_id LEFT JOIN classes c ON s.class_id = c.id LEFT JOIN sections sec ON s.section_id = sec.id WHERE ps.parent_id = :parent_id AND s.deleted_at IS NULL ");
+Tables involved: classes, sections, students, parent_students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 38)
+Query: $stmt_q = $pdo->prepare(" SELECT qualification, passing_year, roll_no, obtained_marks, percentage, subjects, school_college_name FROM student_qualifications WHERE student_id = :student_id ");
+Tables involved: student_qualifications
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 101)
+Query: $pdo->prepare("UPDATE students SET status = :status WHERE id = :id")->execute([':status' => $new_status, ':id' => $student_id]);
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 102)
+Query: $pdo->prepare("UPDATE users SET status = :status WHERE id = :user_id")->execute([':status' => $user_status, ':user_id' => $student['user_id']]);
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 126)
+Query: $pdo->prepare("UPDATE students SET deleted_at = :now WHERE id = :id")->execute([':now' => $now, ':id' => $student_id]);
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 185)
+Query: $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 453)
+Query: $stmt_qual = $pdo->prepare(" INSERT INTO student_qualifications (student_id, qualification, passing_year, roll_no, obtained_marks, percentage, subjects, school_college_name) VALUES (:student_id, :qualification, :passing_year, :roll_no, :obtained_marks, :percentage, :subjects, :school_college_name) ");
+Tables involved: student_qualifications
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 530)
+Query: $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username AND id != :user_id");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 698)
+Query: $stmt_student_update = $pdo->prepare(" UPDATE students SET session_id = :session_id, class_id = :class_id, section_id = :section_id, apaar_id = :apaar_id, pen_no = :pen_no, registration_no_prefix = :registration_no_prefix, registration_no = :registration_no, enrollment_no_prefix = :enrollment_no_prefix, enrollment_no = :enrollment_no, sr_no_prefix = :sr_no_prefix, sr_no = :sr_no, general_reg_no = :general_reg_no, admission_no_prefix = :admission_no_prefix, admission_no = :admission_no,
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\index.php (Line 921)
+Query: $stmt_qual = $pdo->prepare(" INSERT INTO student_qualifications (student_id, qualification, passing_year, roll_no, obtained_marks, percentage, subjects, school_college_name) VALUES (:student_id, :qualification, :passing_year, :roll_no, :obtained_marks, :percentage, :subjects, :school_college_name) ");
+Tables involved: student_qualifications
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\trash.php (Line 33)
+Query: $pdo->prepare("UPDATE students SET deleted_at = NULL WHERE id = :id") ->execute([':id' => $student_id]);
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\trash.php (Line 70)
+Query: $pdo->prepare("DELETE FROM student_qualifications WHERE student_id = :id")->execute([':id' => $student_id]);
+Tables involved: student_qualifications
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\trash.php (Line 71)
+Query: $pdo->prepare("DELETE FROM student_attendance WHERE student_id = :id")->execute([':id' => $student_id]);
+Tables involved: student_attendance
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\trash.php (Line 72)
+Query: $pdo->prepare("DELETE FROM students WHERE id = :id")->execute([':id' => $student_id]);
+Tables involved: students
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\view.php (Line 142)
+Query: $stmt_q = $pdo->prepare(" SELECT * FROM student_qualifications WHERE student_id = :student_id ");
+Tables involved: student_qualifications
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\view.php (Line 235)
+Query: $stmt_fee_items = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id = :student_id AND is_active = 1 ORDER BY id ASC");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\students\view.php (Line 240)
+Query: $stmt_deleted_fee_items = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id = :student_id AND is_active = 0 ORDER BY id ASC");
+Tables involved: student_fee_items
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 24)
+Query: $stmt_c = $pdo->prepare(" SELECT class_id, section_id, is_class_teacher FROM teacher_classes WHERE teacher_id = :teacher_id ");
+Tables involved: teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 101)
+Query: $stmt_tc = $pdo->prepare(" INSERT INTO teacher_classes (teacher_id, class_id, section_id, is_class_teacher) VALUES (:teacher_id, :class_id, :section_id, 0) ");
+Tables involved: teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 157)
+Query: $stmt = $pdo->prepare("UPDATE teachers SET status = :status WHERE id = :id");
+Tables involved: teachers
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 161)
+Query: $stmt = $pdo->prepare("UPDATE users SET status = :status WHERE id = :user_id");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 190)
+Query: $pdo->prepare("UPDATE teachers SET deleted_at = :now WHERE id = :id") ->execute([':now' => $now, ':id' => $teacher_id]);
+Tables involved: teachers
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 259)
+Query: $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 429)
+Query: $stmt_class = $pdo->prepare(" INSERT INTO teacher_classes (teacher_id, class_id, section_id, is_class_teacher) VALUES (:teacher_id, :class_id, :section_id, :is_class_teacher) ");
+Tables involved: teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 500)
+Query: $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username AND id != :user_id");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 632)
+Query: $stmt_teacher_update = $pdo->prepare(" UPDATE teachers SET staff_id = :staff_id, joining_date = :joining_date, photo = :photo, first_name = :first_name, last_name = :last_name, email = :email, mobile_no = :mobile_no, alternate_mobile_no = :alternate_mobile_no, whatsapp_no = :whatsapp_no, gender = :gender, dob = :dob, marital_status = :marital_status, spouse_name = :spouse_name, father_name = :father_name,
+Tables involved: teachers
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 723)
+Query: $stmt_del = $pdo->prepare("DELETE FROM teacher_classes WHERE teacher_id = :teacher_id");
+Tables involved: teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 730)
+Query: $stmt_class = $pdo->prepare(" INSERT INTO teacher_classes (teacher_id, class_id, section_id, is_class_teacher) VALUES (:teacher_id, :class_id, :section_id, :is_class_teacher) ");
+Tables involved: teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\index.php (Line 799)
+Query: $stmt_c = $pdo->prepare(" SELECT tc.*, c.name as class_name, s.name as section_name FROM teacher_classes tc JOIN classes c ON tc.class_id = c.id JOIN sections s ON tc.section_id = s.id WHERE tc.teacher_id = :teacher_id ");
+Tables involved: classes, sections, teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\trash.php (Line 33)
+Query: $pdo->prepare("UPDATE teachers SET deleted_at = NULL WHERE id = :id") ->execute([':id' => $teacher_id]);
+Tables involved: teachers
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\trash.php (Line 70)
+Query: $pdo->prepare("DELETE FROM teacher_classes WHERE teacher_id = :id")->execute([':id' => $teacher_id]);
+Tables involved: teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\trash.php (Line 71)
+Query: $pdo->prepare("DELETE FROM teachers WHERE id = :id")->execute([':id' => $teacher_id]);
+Tables involved: teachers
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \modules\school\teachers\view.php (Line 86)
+Query: $stmt_c = $pdo->prepare(" SELECT tc.*, c.name as class_name, s.name as section_name FROM teacher_classes tc JOIN classes c ON tc.class_id = c.id JOIN sections s ON tc.section_id = s.id WHERE tc.teacher_id = :teacher_id ");
+Tables involved: classes, sections, teacher_classes
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \index.php (Line 42)
+Query: $user_count_stmt = $pdo->query("SELECT COUNT(*) FROM users");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \login.php (Line 29)
+Query: $stmt = $pdo->prepare("SELECT u.*, r.name as role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE (u.email = :login_email OR u.username = :login_username) AND u.status = 'active'");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \login.php (Line 53)
+Query: $pdo->prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = :id") ->execute([':id' => $user['id']]);
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
+FILE: \register.php (Line 6)
+Query: $stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE role_id = 1");
+Tables involved: users
+Missing school_id filter check: YES
+--------------------------------------------------
