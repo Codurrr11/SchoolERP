@@ -1,0 +1,29 @@
+# IDE
+.vscode/
+.idea/
+
+# AI / Prompt files
+prompts/
+
+# Temporary work
+scratch/
+
+# Uploads
+uploads/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Node
+node_modules/
+
+# Composer
+vendor/
