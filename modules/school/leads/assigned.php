@@ -41,7 +41,7 @@ if (isset($_GET['get_lead_details']) && isset($_GET['id'])) {
 }
 
 // Fetch helper data
-$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
@@ -53,7 +53,7 @@ $stmt = $pdo->prepare("SELECT * FROM lead_sources WHERE school_id = :school_id O
 $stmt->execute([':school_id' => $school_id]);
 $lead_sources = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM lead_statuses WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM lead_statuses WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $lead_statuses = $stmt->fetchAll();
 
@@ -492,28 +492,28 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             
             <!-- Quick Status Filters -->
-            <div class="px-4 pt-3 pb-2 border-bottom d-flex flex-wrap gap-2 align-items-center">
+            <div class="px-4 pt-3 pb-2 border-bottom d-flex flex-wrap gap-2 align-items-center lead-filter-tabs">
                 <?php
-                $tab_colors = [
-                    'Interested' => 'btn-success',
-                    'not interested' => 'btn-danger',
-                    'ADMIN' => 'btn-secondary',
-                    'follow-up' => 'btn-primary',
-                    'call back' => 'btn-warning text-dark',
-                    'Intersted' => 'btn-dark',
-                    'Admission Created' => 'btn-info text-white'
+                $tab_classes = [
+                    'Interested'       => 'tab-interested',
+                    'not interested'   => 'tab-not-interested',
+                    'ADMIN'            => 'tab-admin',
+                    'follow-up'        => 'tab-follow-up',
+                    'call back'        => 'tab-call-back',
+                    'Intersted'        => 'tab-intersted',
+                    'Admission Created'=> 'tab-admission-created'
                 ];
                 foreach ($counts as $t_name => $t_count):
-                    $btn_class = $tab_colors[$t_name] ?? 'btn-outline-secondary';
-                    $active_class = ($active_tab === $t_name) ? '' : 'btn-opacity-50';
+                    $tc_class    = $tab_classes[$t_name] ?? 'tab-neutral';
+                    $active_flag = ($active_tab === $t_name) ? 'active' : '';
                 ?>
-                    <a href="assigned.php?tab=<?php echo urlencode($t_name); ?>&search=<?php echo urlencode($search_query); ?>" 
-                       class="btn btn-sm <?php echo $btn_class; ?> <?php echo $active_class; ?> font-heading fw-semibold text-xxs rounded-pill py-1 px-3">
+                    <a href="assigned.php?tab=<?php echo urlencode($t_name); ?>&search=<?php echo urlencode($search_query); ?>"
+                       class="btn-filter <?php echo $tc_class; ?> <?php echo $active_flag; ?>">
                         <?php echo $t_name; ?> (<?php echo $t_count; ?>)
                     </a>
                 <?php endforeach; ?>
-                <a href="assigned.php?tab=All&search=<?php echo urlencode($search_query); ?>" 
-                   class="btn btn-sm btn-outline-secondary <?php echo ($active_tab === 'All') ? 'active' : ''; ?> font-heading fw-semibold text-xxs rounded-pill py-1 px-3">
+                <a href="assigned.php?tab=All&search=<?php echo urlencode($search_query); ?>"
+                   class="btn-filter tab-all <?php echo ($active_tab === 'All') ? 'active' : ''; ?>">
                     Show All
                 </a>
             </div>
@@ -551,22 +551,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                 foreach ($leads as $l): 
                                 ?>
                                     <tr>
-                                        <td><span class="text-xs text-muted"><?php echo $idx++; ?></span></td>
+                                        <td><span class="cell-counter"><?php echo $idx++; ?></span></td>
                                         
                                         <!-- Student Details -->
                                         <td>
                                             <div class="d-flex align-items-center gap-2">
                                                 <?php if (!empty($l['photo'])): ?>
-                                                    <img src="<?php echo BASE_URL . sanitize($l['photo']); ?>" alt="Profile" class="student-avatar" style="width:34px; height:34px; border-radius:50%; object-fit:cover;">
+                                                    <img src="<?php echo BASE_URL . sanitize($l['photo']); ?>" alt="Profile" class="student-avatar">
                                                 <?php else: ?>
-                                                    <div class="student-avatar-placeholder" style="width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#f1f5f9; color:#475569; font-weight:700; font-size:11px;">
+                                                    <div class="student-avatar-placeholder">
                                                         <?php echo strtoupper(substr($l['first_name'], 0, 1) . substr($l['last_name'] ?? '', 0, 1)); ?>
                                                     </div>
                                                 <?php endif; ?>
                                                 <div class="d-flex flex-column">
-                                                    <span class="fw-bold student-name text-xs" style="color:#2563EB;">Name: <?php echo sanitize($l['first_name'] . ' ' . $l['last_name']); ?></span>
-                                                    <span class="text-xxs text-muted">Father Name: <strong class="text-dark"><?php echo sanitize($l['father_name'] ?? '—'); ?></strong></span>
-                                                    <span class="text-xxs text-muted">Mother Name: <strong class="text-dark"><?php echo sanitize($l['mother_name'] ?? '—'); ?></strong></span>
+                                                    <span class="student-name-link"><?php echo sanitize($l['first_name'] . ' ' . $l['last_name']); ?></span>
+                                                    <span class="text-xxs text-muted">Father: <strong class="text-dark"><?php echo sanitize($l['father_name'] ?? '—'); ?></strong></span>
+                                                    <span class="text-xxs text-muted">Mother: <strong class="text-dark"><?php echo sanitize($l['mother_name'] ?? '—'); ?></strong></span>
                                                 </div>
                                             </div>
                                         </td>
@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </td>
                                         
                                         <!-- Address -->
-                                        <td class="text-xs" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        <td class="text-xs text-muted cell-truncate">
                                             <?php echo sanitize($l['address'] ?? '—'); ?>
                                         </td>
                                         
@@ -616,33 +616,33 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <td>
                                             <?php
                                             $badges = [
-                                                'Interested' => 'bg-success text-white',
-                                                'not interested' => 'bg-danger text-white',
-                                                'ADMIN' => 'bg-secondary text-white',
-                                                'follow-up' => 'bg-primary text-white',
-                                                'call back' => 'bg-warning text-dark',
-                                                'Intersted' => 'bg-dark text-white',
-                                                'Admission Created' => 'bg-info text-white'
+                                                'Interested'       => 'bg-success',
+                                                'not interested'   => 'bg-danger',
+                                                'ADMIN'            => 'bg-secondary',
+                                                'follow-up'        => 'bg-primary',
+                                                'call back'        => 'bg-warning',
+                                                'Intersted'        => 'bg-success',
+                                                'Admission Created'=> 'bg-info'
                                             ];
                                             $b_class = $badges[$l['status']] ?? 'bg-light text-muted';
                                             ?>
-                                            <span class="badge <?php echo $b_class; ?> text-xxs px-2.5 py-1.5 rounded-pill fw-semibold">
+                                            <span class="badge <?php echo $b_class; ?>">
                                                 <?php echo $l['status']; ?>
                                             </span>
                                         </td>
                                         
                                         <!-- Remark -->
-                                        <td class="text-xs text-muted" style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        <td class="text-xs text-muted cell-truncate">
                                             <?php echo sanitize($l['remark'] ?? '—'); ?>
                                         </td>
                                         
                                         <!-- Actions Dropdown -->
                                         <td class="text-center">
                                             <div class="dropdown">
-                                                <button class="btn btn-sm btn-primary py-1 px-2 text-xxs font-heading dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">
+                                                <button class="teacher-action-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Actions">
                                                     <i class="ph-bold ph-list"></i>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 8px;">
+                                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                                     <li><a class="dropdown-item py-2 text-xs view-lead-btn" href="#" data-id="<?php echo $l['id']; ?>"><i class="ph-light ph-eye me-2"></i> View</a></li>
                                                     <li><a class="dropdown-item py-2 text-xs assign-lead-btn" href="#" data-id="<?php echo $l['id']; ?>"><i class="ph-light ph-user-circle me-2"></i> Assign</a></li>
                                                     <li><a class="dropdown-item py-2 text-xs schedule-lead-btn" href="#" data-id="<?php echo $l['id']; ?>"><i class="ph-light ph-clock me-2"></i> Sch./Remark/Status</a></li>
@@ -667,8 +667,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Edit Lead Modal -->
 <div class="modal fade" id="editLeadModal" tabindex="-1" aria-labelledby="editLeadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content shadow border-0" style="border-radius: 16px;">
-            <div class="modal-header bg-light py-3 px-4" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-3 px-4">
                 <h5 class="modal-title font-heading fw-bold text-dark" id="editLeadModalLabel">Edit Lead</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -885,7 +885,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>
                 
-                <div class="modal-footer bg-light p-3" style="border-bottom-left-radius:16px; border-bottom-right-radius:16px;">
+                <div class="modal-footer modal-footer-admin p-3">
                     <button type="button" class="btn btn-admin-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary font-heading px-4">Save Changes</button>
                 </div>
@@ -897,8 +897,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- View Details Modal -->
 <div class="modal fade" id="viewLeadModal" tabindex="-1" aria-labelledby="viewLeadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content shadow border-0" style="border-radius: 16px;">
-            <div class="modal-header bg-light py-3 px-4" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-3 px-4">
                 <h5 class="modal-title font-heading fw-bold text-dark" id="viewLeadModalLabel">Lead Inquiry Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -973,7 +973,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light p-3" style="border-bottom-left-radius:16px; border-bottom-right-radius:16px;">
+            <div class="modal-footer modal-footer-admin p-3">
                 <button type="button" class="btn btn-admin-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -983,8 +983,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Assign Lead Modal -->
 <div class="modal fade" id="assignLeadModal" tabindex="-1" aria-labelledby="assignLeadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content shadow border-0" style="border-radius:12px;">
-            <div class="modal-header bg-light py-2.5 px-3">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-2 px-3">
                 <h6 class="modal-title font-heading fw-bold" id="assignLeadModalLabel">Assign Lead</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -1002,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="modal-footer p-2.5 bg-light">
+                <div class="modal-footer modal-footer-admin p-2">
                     <button type="button" class="btn btn-xs btn-admin-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-xs btn-primary font-heading px-3">Assign</button>
                 </div>
@@ -1014,8 +1014,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Schedule / Remark / Status Modal -->
 <div class="modal fade" id="scheduleLeadModal" tabindex="-1" aria-labelledby="scheduleLeadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:450px;">
-        <div class="modal-content shadow border-0" style="border-radius:12px;">
-            <div class="modal-header bg-light py-2.5 px-3">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-2 px-3">
                 <h6 class="modal-title font-heading fw-bold" id="scheduleLeadModalLabel">Schedule / Follow-up Status</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -1042,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <textarea name="remark" id="schedule_remark" class="form-control-admin" rows="3" placeholder="Enter follow-up details..."></textarea>
                     </div>
                 </div>
-                <div class="modal-footer p-2.5 bg-light">
+                <div class="modal-footer modal-footer-admin p-2">
                     <button type="button" class="btn btn-xs btn-admin-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-xs btn-primary font-heading px-3">Save Changes</button>
                 </div>

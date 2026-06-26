@@ -215,24 +215,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </td>
 
                                         <!-- Actions -->
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <!-- Edit Button -->
-                                                <button type="button" 
-                                                        class="btn btn-xs btn-outline-primary py-1 px-2 text-xxs font-heading edit-source-btn" 
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <button type="button"
+                                                        class="teacher-action-btn action-edit edit-source-btn"
                                                         title="Edit Source"
                                                         data-id="<?php echo $src['id']; ?>"
                                                         data-name="<?php echo sanitize($src['name']); ?>">
-                                                    Edit
+                                                    <i class="ph-light ph-pencil"></i>
                                                 </button>
 
-                                                <!-- Delete Button -->
-                                                <button type="button" 
-                                                        class="btn btn-xs btn-outline-danger py-1 px-2 text-xxs font-heading delete-source-btn" 
+                                                <button type="button"
+                                                        class="teacher-action-btn action-delete delete-source-btn"
                                                         title="Delete Source"
                                                         data-id="<?php echo $src['id']; ?>"
                                                         data-name="<?php echo sanitize($src['name']); ?>">
-                                                    Delete
+                                                    <i class="ph-light ph-trash"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -250,8 +248,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Add Modal -->
 <div class="modal fade" id="addSourceModal" tabindex="-1" aria-labelledby="addSourceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content shadow border-0" style="border-radius: 12px;">
-            <div class="modal-header bg-light py-2.5 px-3">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-2 px-3">
                 <h6 class="modal-title font-heading fw-bold" id="addSourceModalLabel">Add Lead Source</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -263,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <label class="form-label-admin">Source Name <span class="text-danger">*</span></label>
                     <input type="text" name="name" class="form-control-admin" required placeholder="e.g. Facebook, Instagram, Flyer">
                 </div>
-                <div class="modal-footer p-2.5 bg-light">
+                <div class="modal-footer modal-footer-admin p-2">
                     <button type="button" class="btn btn-xs btn-admin-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-xs btn-primary font-heading px-3">Create</button>
                 </div>
@@ -275,8 +273,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Edit Modal -->
 <div class="modal fade" id="editSourceModal" tabindex="-1" aria-labelledby="editSourceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content shadow border-0" style="border-radius: 12px;">
-            <div class="modal-header bg-light py-2.5 px-3">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-2 px-3">
                 <h6 class="modal-title font-heading fw-bold" id="editSourceModalLabel">Edit Lead Source</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -289,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <label class="form-label-admin">Source Name <span class="text-danger">*</span></label>
                     <input type="text" name="name" id="edit_name" class="form-control-admin" required>
                 </div>
-                <div class="modal-footer p-2.5 bg-light">
+                <div class="modal-footer modal-footer-admin p-2">
                     <button type="button" class="btn btn-xs btn-admin-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-xs btn-primary font-heading px-3">Save Changes</button>
                 </div>

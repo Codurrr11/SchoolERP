@@ -84,11 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Fetch assigned classes
 $stmt_c = $pdo->prepare("
-    SELECT tc.*, c.name as class_name, s.name as section_name
+    SELECT tc.*, c.class_name as class_name, s.section_name as section_name
     FROM   teacher_classes tc
     JOIN   classes c ON tc.class_id = c.id
     JOIN   sections s ON tc.section_id = s.id
     WHERE  tc.teacher_id = :teacher_id
+    ORDER BY c.sort_order ASC, s.section_name ASC
 ");
 $stmt_c->execute([':teacher_id' => $teacher['id']]);
 $assigned_classes = $stmt_c->fetchAll();
@@ -129,6 +130,10 @@ foreach ($attendance_records as $rec) {
 // Generate CSRF token for file uploads
 $csrf_token = generate_csrf_token();
 
+$flash_success = $_SESSION['flash_success'] ?? null;
+$flash_error = $_SESSION['flash_error'] ?? null;
+unset($_SESSION['flash_success'], $_SESSION['flash_error']);
+
 require_once '../../../includes/header.php';
 ?>
 
@@ -151,7 +156,7 @@ require_once '../../../includes/header.php';
     <!-- FULL WIDTH COLUMN: QUICK SUMMARY CARD -->
     <div class="col-12">
         <div class="card-premium teacher-summary-card p-0">
-            <div class="p-4">
+            <div class="p-3">
                 <div class="row align-items-center g-4">
                     <!-- Profile Primary Info -->
                     <div class="col-md-4 text-center profile-left-col pe-md-4">
@@ -227,7 +232,7 @@ require_once '../../../includes/header.php';
             
             <!-- Navigation Tabs under Profile Info -->
             <div class="border-top student-tabs-header">
-                <ul class="nav nav-tabs teacher-tabs flex-nowrap border-0 m-0" id="teacherTab" role="tablist" style="overflow-x: auto; white-space: nowrap;">
+                <ul class="nav nav-tabs teacher-tabs flex-nowrap border-0 m-0" id="teacherTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
                             <i class="ph-light ph-user-focus"></i> View Details
@@ -423,9 +428,9 @@ require_once '../../../includes/header.php';
                                     </thead>
                                     <tbody>
                                         <?php if (empty($qualifications)): ?>
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted" style="padding: 16px;">No academic qualifications listed.</td>
-                                            </tr>
+                                             <tr>
+                                                <td colspan="3" class="text-center text-muted py-3">No academic qualifications listed.</td>
+                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($qualifications as $q): ?>
                                                 <tr>
@@ -546,9 +551,9 @@ require_once '../../../includes/header.php';
                                     </thead>
                                     <tbody>
                                         <?php if (empty($assigned_classes)): ?>
-                                            <tr>
-                                                <td colspan="3" class="text-center text-muted" style="padding: 16px;">No classes/sections currently assigned.</td>
-                                            </tr>
+                                             <tr>
+                                                <td colspan="3" class="text-center text-muted py-3">No classes/sections currently assigned.</td>
+                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($assigned_classes as $tc): ?>
                                                 <tr>
@@ -582,7 +587,7 @@ require_once '../../../includes/header.php';
                         <div class="row g-2 mb-4">
                             <div class="col-4 col-sm-2">
                                 <div class="att-stat-card">
-                                    <div class="att-stat-icon" style="background-color: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                                    <div class="att-stat-icon att-icon-total">
                                         <i class="ph-light ph-hash"></i>
                                     </div>
                                     <div class="att-stat-info">
@@ -593,56 +598,56 @@ require_once '../../../includes/header.php';
                             </div>
                             <div class="col-4 col-sm-2">
                                 <div class="att-stat-card">
-                                    <div class="att-stat-icon" style="background-color: rgba(22, 163, 74, 0.1); color: #16a34a;">
+                                    <div class="att-stat-icon att-icon-present">
                                         <i class="ph-light ph-check-circle"></i>
                                     </div>
                                     <div class="att-stat-info">
                                         <span class="att-stat-label">Present</span>
-                                        <span class="att-stat-val text-success"><?php echo $present_days; ?></span>
+                                        <span class="att-stat-val att-val-present"><?php echo $present_days; ?></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-4 col-sm-2">
                                 <div class="att-stat-card">
-                                    <div class="att-stat-icon" style="background-color: rgba(217, 119, 6, 0.1); color: #d97706;">
+                                    <div class="att-stat-icon att-icon-late">
                                         <i class="ph-light ph-clock"></i>
                                     </div>
                                     <div class="att-stat-info">
                                         <span class="att-stat-label">Late</span>
-                                        <span class="att-stat-val text-warning"><?php echo $late_days; ?></span>
+                                        <span class="att-stat-val att-val-late"><?php echo $late_days; ?></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-4 col-sm-2">
                                 <div class="att-stat-card">
-                                    <div class="att-stat-icon" style="background-color: rgba(220, 38, 38, 0.1); color: #dc2626;">
+                                    <div class="att-stat-icon att-icon-absent">
                                         <i class="ph-light ph-x-circle"></i>
                                     </div>
                                     <div class="att-stat-info">
                                         <span class="att-stat-label">Absent</span>
-                                        <span class="att-stat-val text-danger"><?php echo $absent_days; ?></span>
+                                        <span class="att-stat-val att-val-absent"><?php echo $absent_days; ?></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-4 col-sm-2">
                                 <div class="att-stat-card">
-                                    <div class="att-stat-icon" style="background-color: rgba(124, 58, 237, 0.1); color: #7c3aed;">
+                                    <div class="att-stat-icon att-icon-leave">
                                         <i class="ph-light ph-calendar-blank"></i>
                                     </div>
                                     <div class="att-stat-info">
                                         <span class="att-stat-label">Leave</span>
-                                        <span class="att-stat-val" style="color: #7c3aed;"><?php echo $leave_days; ?></span>
+                                        <span class="att-stat-val att-val-leave"><?php echo $leave_days; ?></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-4 col-sm-2">
                                 <div class="att-stat-card">
-                                    <div class="att-stat-icon" style="background-color: rgba(8, 145, 178, 0.1); color: #0891b2;">
+                                    <div class="att-stat-icon att-icon-halfday">
                                         <i class="ph-light ph-hourglass-simple"></i>
                                     </div>
                                     <div class="att-stat-info">
                                         <span class="att-stat-label">Half Day</span>
-                                        <span class="att-stat-val" style="color: #0891b2;"><?php echo $half_days; ?></span>
+                                        <span class="att-stat-val att-val-halfday"><?php echo $half_days; ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -661,8 +666,8 @@ require_once '../../../includes/header.php';
                                 </thead>
                                 <tbody>
                                     <?php if (empty($attendance_records)): ?>
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted" style="padding: 24px;">No attendance records found.</td>
+                                     <tr>
+                                            <td colspan="5" class="text-center text-muted py-4">No attendance records found.</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($attendance_records as $rec): ?>
@@ -701,190 +706,157 @@ require_once '../../../includes/header.php';
 
                     <!-- TAB 3: DOCUMENTS -->
                     <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
-                        <div class="teacher-section-title">
-                            <i class="ph-light ph-folder-open"></i> Attached Verification Files
-                        </div>
-
-                        <div class="row g-4">
-                            <!-- 1. Teacher Photo Preview -->
-                            <div class="col-sm-6 col-md-4">
-                                <div class="doc-card">
-                                    <div class="doc-card-title">Profile Photo</div>
-                                    <div class="doc-card-body p-0 d-flex flex-column h-100 justify-content-between">
-                                        <?php if (!empty($teacher['photo'])): ?>
-                                            <div class="doc-img-container mb-3">
-                                                <img src="<?php echo BASE_URL . sanitize($teacher['photo']); ?>" alt="Photo" class="doc-img-preview">
-                                            </div>
-                                            <div class="doc-actions w-100">
-                                                <a href="<?php echo BASE_URL . sanitize($teacher['photo']); ?>" target="_blank" class="btn btn-sm btn-outline-primary w-100 mb-2">
-                                                    <i class="ph-light ph-eye"></i> View Large
-                                                </a>
-                                                <button class="btn btn-sm btn-outline-secondary w-100 replace-file-trigger">
-                                                    <i class="ph-light ph-pencil-simple"></i> Replace File
-                                                </button>
-                                                <div class="upload-form-wrapper d-none mt-2">
-                                                    <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="action" value="upload_doc">
-                                                        <input type="hidden" name="doc_type" value="photo">
-                                                        <div class="mb-2">
-                                                            <input type="file" name="doc_file" class="form-control form-control-sm" accept="image/*" required>
-                                                        </div>
-                                                        <div class="d-flex gap-1">
-                                                            <button type="submit" class="btn btn-sm btn-primary flex-grow-1">Upload</button>
-                                                            <button type="button" class="btn btn-sm btn-light cancel-replace-trigger">Cancel</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="doc-empty-state mb-3">
-                                                <i class="ph-light ph-image-square empty-icon"></i>
-                                                <span class="empty-text">No Photo Uploaded</span>
-                                            </div>
-                                            <div class="doc-actions w-100 mt-auto">
-                                                <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                    <input type="hidden" name="action" value="upload_doc">
-                                                    <input type="hidden" name="doc_type" value="photo">
-                                                    <div class="mb-2">
-                                                        <input type="file" name="doc_file" class="form-control form-control-sm" accept="image/*" required>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-sm btn-primary w-100">
-                                                        <i class="ph-light ph-upload-simple"></i> Upload Photo
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
+                        <div class="detail-section-card">
+                            <div class="detail-section-title">
+                                <i class="ph-light ph-folder-open"></i> Attached Verification Files
                             </div>
+                            <p class="text-xs text-muted mb-4" style="margin-top: -10px;">You can drag and drop image (jpeg, png) or pdf files.</p>
 
-                            <!-- 2. Attached Aadhar File -->
-                            <div class="col-sm-6 col-md-4">
-                                <div class="doc-card">
-                                    <div class="doc-card-title">Aadhar Document</div>
-                                    <div class="doc-card-body p-0 d-flex flex-column h-100 justify-content-between">
-                                        <?php if (!empty($teacher['aadhar_file'])): ?>
-                                            <?php
-                                            $ext = strtolower(pathinfo($teacher['aadhar_file'], PATHINFO_EXTENSION));
-                                            if ($ext === 'pdf'):
-                                            ?>
-                                                <div class="doc-pdf-container mb-3">
-                                                    <i class="ph-light ph-file-pdf pdf-large-icon"></i>
-                                                    <span class="pdf-text">PDF Document</span>
-                                                </div>
-                                            <?php else: ?>
-                                                <div class="doc-img-container mb-3">
-                                                    <img src="<?php echo BASE_URL . sanitize($teacher['aadhar_file']); ?>" alt="Aadhar" class="doc-img-preview">
-                                                </div>
-                                            <?php endif; ?>
-                                            <div class="doc-actions w-100">
-                                                <a href="<?php echo BASE_URL . sanitize($teacher['aadhar_file']); ?>" target="_blank" class="btn btn-sm btn-outline-primary w-100 mb-2">
-                                                    <i class="ph-light ph-eye"></i> View File
-                                                </a>
-                                                <button class="btn btn-sm btn-outline-secondary w-100 replace-file-trigger">
-                                                    <i class="ph-light ph-pencil-simple"></i> Replace File
-                                                </button>
-                                                <div class="upload-form-wrapper d-none mt-2">
-                                                    <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="action" value="upload_doc">
-                                                        <input type="hidden" name="doc_type" value="aadhar_file">
-                                                        <div class="mb-2">
-                                                            <input type="file" name="doc_file" class="form-control form-control-sm" accept="image/*,application/pdf" required>
-                                                        </div>
-                                                        <div class="d-flex gap-1">
-                                                            <button type="submit" class="btn btn-sm btn-primary flex-grow-1">Upload</button>
-                                                            <button type="button" class="btn btn-sm btn-light cancel-replace-trigger">Cancel</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="doc-empty-state mb-3">
-                                                <i class="ph-light ph-identification-card empty-icon"></i>
-                                                <span class="empty-text">No Aadhar Uploaded</span>
-                                            </div>
-                                            <div class="doc-actions w-100 mt-auto">
-                                                <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data">
+                            <div class="row g-4">
+                                <?php
+                                if (!function_exists('render_doc_card')) {
+                                    function render_doc_card($title, $doc_key, $teacher, $csrf_token, $teacher_id)
+                                    {
+                                        $file_path = $teacher[$doc_key] ?? '';
+                                        $has_file = !empty($file_path);
+                                        $accept_types = ($doc_key === 'aadhar_file') ? 'image/*,application/pdf' : 'image/*';
+                                ?>
+                                        <div class="col-12 col-sm-6 col-md-4">
+                                            <div class="upload-doc-card <?php echo $has_file ? 'has-file' : ''; ?>" data-doc-type="<?php echo $doc_key; ?>">
+                                                <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data" class="upload-doc-form h-100 d-flex flex-column m-0">
                                                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                                     <input type="hidden" name="action" value="upload_doc">
-                                                    <input type="hidden" name="doc_type" value="aadhar_file">
-                                                    <div class="mb-2">
-                                                        <input type="file" name="doc_file" class="form-control form-control-sm" accept="image/*,application/pdf" required>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-sm btn-primary w-100">
-                                                        <i class="ph-light ph-upload-simple"></i> Upload Aadhar
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
+                                                    <input type="hidden" name="doc_type" value="<?php echo $doc_key; ?>">
+                                                    <input type="file" name="doc_file" class="upload-doc-input d-none" accept="<?php echo $accept_types; ?>" onchange="this.form.submit()">
 
-                            <!-- 3. Signature File Preview -->
-                            <div class="col-sm-6 col-md-4">
-                                <div class="doc-card">
-                                    <div class="doc-card-title">Signature Image</div>
-                                    <div class="doc-card-body p-0 d-flex flex-column h-100 justify-content-between">
-                                        <?php if (!empty($teacher['signature_file'])): ?>
-                                            <div class="doc-img-container mb-3 bg-white">
-                                                <img src="<?php echo BASE_URL . sanitize($teacher['signature_file']); ?>" alt="Signature" class="doc-img-preview contain-img">
-                                            </div>
-                                            <div class="doc-actions w-100">
-                                                <a href="<?php echo BASE_URL . sanitize($teacher['signature_file']); ?>" target="_blank" class="btn btn-sm btn-outline-primary w-100 mb-2">
-                                                    <i class="ph-light ph-eye"></i> View Large
-                                                </a>
-                                                <button class="btn btn-sm btn-outline-secondary w-100 replace-file-trigger">
-                                                    <i class="ph-light ph-pencil-simple"></i> Replace File
-                                                </button>
-                                                <div class="upload-form-wrapper d-none mt-2">
-                                                    <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data">
-                                                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                        <input type="hidden" name="action" value="upload_doc">
-                                                        <input type="hidden" name="doc_type" value="signature_file">
-                                                        <div class="mb-2">
-                                                            <input type="file" name="doc_file" class="form-control form-control-sm" accept="image/*" required>
-                                                        </div>
-                                                        <div class="d-flex gap-1">
-                                                            <button type="submit" class="btn btn-sm btn-primary flex-grow-1">Upload</button>
-                                                            <button type="button" class="btn btn-sm btn-light cancel-replace-trigger">Cancel</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="doc-empty-state mb-3">
-                                                <i class="ph-light ph-signature empty-icon"></i>
-                                                <span class="empty-text">No Signature Uploaded</span>
-                                            </div>
-                                            <div class="doc-actions w-100 mt-auto">
-                                                <form action="view.php?id=<?php echo $teacher_id; ?>" method="POST" enctype="multipart/form-data">
-                                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                                    <input type="hidden" name="action" value="upload_doc">
-                                                    <input type="hidden" name="doc_type" value="signature_file">
-                                                    <div class="mb-2">
-                                                        <input type="file" name="doc_file" class="form-control form-control-sm" accept="image/*" required>
+                                                    <!-- Clickable Drop Zone -->
+                                                    <div class="upload-doc-zone flex-grow-1 d-flex flex-column align-items-center justify-content-center text-center p-3 trigger-file-select">
+                                                        <?php if ($has_file): ?>
+                                                            <?php
+                                                            $ext = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+                                                            if ($ext === 'pdf'):
+                                                            ?>
+                                                                <div class="uploaded-doc-preview text-danger d-flex flex-column align-items-center justify-content-center">
+                                                                    <i class="ph-light ph-file-pdf" style="font-size: 44px;"></i>
+                                                                    <div class="text-xxs text-muted mt-1 text-truncate" style="max-width: 140px;"><?php echo htmlspecialchars(basename($file_path)); ?></div>
+                                                                </div>
+                                                            <?php else: ?>
+                                                                <div class="uploaded-doc-preview d-flex align-items-center justify-content-center">
+                                                                    <img src="<?php echo BASE_URL . sanitize($file_path); ?>" class="uploaded-doc-img" alt="<?php echo htmlspecialchars($title); ?>">
+                                                                </div>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <div class="upload-doc-prompt">
+                                                                <div class="text-xs text-secondary fw-semibold">Drag and Drop</div>
+                                                                <div class="text-xxs text-muted my-1">OR</div>
+                                                                <div class="text-xs text-secondary fw-semibold">Click on upload button</div>
+                                                            </div>
+                                                        <?php endif; ?>
                                                     </div>
-                                                    <button type="submit" class="btn btn-sm btn-primary w-100">
-                                                        <i class="ph-light ph-upload-simple"></i> Upload Signature
-                                                    </button>
+
+                                                    <!-- Card Footer -->
+                                                    <div class="upload-doc-bar d-flex align-items-center justify-content-between px-3 py-2">
+                                                        <?php if ($has_file): ?>
+                                                            <div class="d-flex gap-1.5 align-items-center">
+                                                                <a href="<?php echo BASE_URL . sanitize($file_path); ?>" target="_blank" class="upload-doc-btn btn-view" title="View Document">
+                                                                    <i class="ph-bold ph-eye"></i>
+                                                                </a>
+                                                                <button type="button" class="upload-doc-btn btn-upload trigger-file-select" title="Replace Document">
+                                                                    <i class="ph-bold ph-arrows-counter-clockwise"></i>
+                                                                </button>
+                                                            </div>
+                                                        <?php else: ?>
+                                                            <button type="button" class="upload-doc-btn btn-upload trigger-file-select" title="Upload Document">
+                                                                <i class="ph-bold ph-upload-simple"></i>
+                                                            </button>
+                                                        <?php endif; ?>
+
+                                                        <span class="upload-doc-title text-xs fw-bold text-dark"><?php echo htmlspecialchars($title); ?></span>
+                                                    </div>
                                                 </form>
                                             </div>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
+                                        </div>
+                                <?php
+                                    }
+                                }
+
+                                render_doc_card("Profile Photo", "photo", $teacher, $csrf_token, $teacher_id);
+                                render_doc_card("Aadhar Document", "aadhar_file", $teacher, $csrf_token, $teacher_id);
+                                render_doc_card("Signature Image", "signature_file", $teacher, $csrf_token, $teacher_id);
+                                ?>
                             </div>
                         </div>
 
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // 1. Click to trigger upload
+                                document.querySelectorAll('.trigger-file-select').forEach(function(zone) {
+                                    zone.addEventListener('click', function(e) {
+                                        // If we click an anchor link (view file), do not trigger file input
+                                        if (e.target.closest('a')) return;
+
+                                        var card = this.closest('.upload-doc-card');
+                                        var input = card.querySelector('.upload-doc-input');
+                                        input.click();
+                                    });
+                                });
+
+                                // 2. Drag and drop file upload
+                                document.querySelectorAll('.upload-doc-card').forEach(function(card) {
+                                    var zone = card.querySelector('.upload-doc-zone');
+                                    var input = card.querySelector('.upload-doc-input');
+                                    var form = card.querySelector('.upload-doc-form');
+
+                                    // Prevent defaults
+                                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                                        card.addEventListener(eventName, preventDefaults, false);
+                                    });
+
+                                    function preventDefaults(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }
+
+                                    // Highlight/unhighlight
+                                    ['dragenter', 'dragover'].forEach(eventName => {
+                                        card.addEventListener(eventName, function() {
+                                            card.classList.add('drag-over');
+                                        }, false);
+                                    });
+
+                                    ['dragleave', 'drop'].forEach(eventName => {
+                                        card.addEventListener(eventName, function() {
+                                            card.classList.remove('drag-over');
+                                        }, false);
+                                    });
+
+                                    // Handle drop
+                                    card.addEventListener('drop', function(e) {
+                                        var dt = e.dataTransfer;
+                                        var files = dt.files;
+
+                                        if (files && files.length > 0) {
+                                            input.files = files;
+                                            form.submit();
+                                        }
+                                    }, false);
+                                });
+                            });
+                        </script>
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Meta tag for JS parameter passing without inline scripting -->
+<div id="teacher-page-data"
+    data-csrf-token="<?php echo $csrf_token; ?>"
+    data-base-url="<?php echo BASE_URL; ?>"
+    data-flash-success="<?php echo sanitize($flash_success); ?>"
+    data-flash-error="<?php echo sanitize($flash_error); ?>">
 </div>
 
 <?php

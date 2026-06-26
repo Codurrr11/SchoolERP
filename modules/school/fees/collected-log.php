@@ -7,11 +7,11 @@ $school_id = enforce_tenant();
 require_once '../../../config/db.php';
 
 // Fetch classes and sections for dropdowns
-$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_sections = $stmt->fetchAll();
 

@@ -34,6 +34,10 @@
         $is_leads        = (strpos($current_uri, '/modules/school/leads/') !== false);
         $is_admissions   = (strpos($current_uri, '/modules/school/admissions/') !== false);
         $is_profile      = (strpos($current_uri, '/modules/school/profile/') !== false);
+        $is_classes      = (strpos($current_uri, '/modules/school/classes/') !== false);
+        $is_sections     = (strpos($current_uri, '/modules/school/sections/') !== false);
+        $is_school_mgmt  = ($is_classes || $is_sections);
+
 
         if ($role_name === 'super_admin'):
         ?>
@@ -95,6 +99,20 @@
                 </div>
             </div>
 
+            <!-- School Management -->
+            <div class="w-100 sidebar-nav-dropdown">
+                <a href="#submenuSchoolMgmt" class="sidebar-nav-item <?php echo ($is_school_mgmt) ? 'active' : ''; ?>" data-bs-toggle="collapse" role="button" aria-expanded="<?php echo ($is_school_mgmt) ? 'true' : 'false'; ?>" title="Class Management">
+                    <i class="ph-light ph-building"></i>
+                    <span class="nav-label">Class Management</span>
+                    <i class="ph-light ph-caret-down dropdown-arrow ms-auto nav-label"></i>
+                </a>
+                <div class="collapse <?php echo ($is_school_mgmt) ? 'show' : ''; ?>" id="submenuSchoolMgmt">
+                    <div class="sidebar-submenu">
+                        <a href="<?php echo BASE_URL; ?>modules/school/classes/index.php" class="submenu-item <?php echo ($is_classes) ? 'active' : ''; ?>"><i class="ph-light ph-graduation-cap"></i> Manage Classes</a>
+                        <a href="<?php echo BASE_URL; ?>modules/school/sections/index.php" class="submenu-item <?php echo ($is_sections) ? 'active' : ''; ?>"><i class="ph-light ph-columns"></i> Manage Sections</a>
+                    </div>
+                </div>
+            </div>
             <!-- 3. Students -->
             <div class="w-100 sidebar-nav-dropdown">
                 <a href="#submenuStudents" class="sidebar-nav-item <?php echo ($is_students) ? 'active' : ''; ?>" data-bs-toggle="collapse" role="button" aria-expanded="<?php echo ($is_students) ? 'true' : 'false'; ?>" title="Students">

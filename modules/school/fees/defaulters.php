@@ -267,7 +267,7 @@ if (isset($_GET['get_student_fees']) && isset($_GET['id'])) {
         $stmt_f = $pdo->prepare("
             SELECT * FROM student_fee_items
             WHERE student_id = :student_id
-            ORDER BY id ASC
+            ORDER BY sort_order ASC
         ");
         $stmt_f->execute([':student_id' => $sid]);
         $items = $stmt_f->fetchAll();
@@ -472,7 +472,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $pdo->beginTransaction();
     try {
         // Fetch all active fee items for this student
-        $stmt_f = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id = :student_id AND is_active = 1 ORDER BY id ASC");
+        $stmt_f = $pdo->prepare("SELECT * FROM student_fee_items WHERE student_id = :student_id AND is_active = 1 ORDER BY sort_order ASC");
         $stmt_f->execute([':student_id' => $student_id]);
         $fee_items = $stmt_f->fetchAll();
         
@@ -581,11 +581,11 @@ $stmt = $pdo->prepare("SELECT * FROM academic_sessions WHERE school_id = :school
 $stmt->execute([':school_id' => $school_id]);
 $all_sessions = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_sections = $stmt->fetchAll();
 

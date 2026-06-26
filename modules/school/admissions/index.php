@@ -50,11 +50,11 @@ require_once '../../../includes/header.php';
                     <div class="d-flex align-items-center gap-3 w-100 w-sm-auto ms-auto justify-content-end">
                         <div class="table-search-box m-0">
                             <i class="ph-light ph-magnifying-glass"></i>
-                            <input type="search" id="admissionsSearchInput" placeholder="Search students..." style="height: 34px; padding-top: 0; padding-bottom: 0;">
+                            <input type="search" id="admissionsSearchInput" placeholder="Search students...">
                         </div>
-                        <div class="d-flex align-items-center gap-1 font-heading text-xxs text-secondary fw-bold bg-light px-2.5 py-1.5 rounded-pill border">
+                        <div class="d-flex align-items-center gap-1 teacher-length-select">
                             Show
-                            <select id="admissionsLengthSelect" class="border-0 bg-transparent text-dark fw-extrabold cursor-pointer" style="outline: none;">
+                            <select id="admissionsLengthSelect" class="length-select-inner">
                                 <option value="10">10</option>
                                 <option value="20" selected>20</option>
                                 <option value="50">50</option>
@@ -68,12 +68,12 @@ require_once '../../../includes/header.php';
                     </div>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-0">
                     <!-- Responsive Table -->
                     <div class="table-responsive">
                         <table id="admissionsTable" class="teacher-detail-table w-100">
                             <thead>
-                                <tr class="admissions-table-header">
+                                <tr>
                                     <th class="th-w-60">#</th>
                                     <th class="th-w-140">Admission No.</th>
                                     <th class="th-w-100">Roll No.</th>

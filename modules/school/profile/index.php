@@ -142,17 +142,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $stmt_up = $pdo->prepare("
-            UPDATE users 
-            SET    first_name = :first_name, 
-                   last_name = :last_name, 
-                   phone = :phone, 
-                   alternate_phone = :alternate_phone, 
-                   email = :email, 
-                   website = :website, 
-                   pincode = :pincode, 
-                   city = :city, 
-                   state = :state, 
-                   country = :country, 
+            UPDATE users
+            SET    first_name = :first_name,
+                   last_name = :last_name,
+                   phone = :phone,
+                   alternate_phone = :alternate_phone,
+                   email = :email,
+                   website = :website,
+                   pincode = :pincode,
+                   city = :city,
+                   state = :state,
+                   country = :country,
                    address = :address
             WHERE  id = :id AND school_id = :school_id
         ");
@@ -238,18 +238,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_del->execute([':id' => $user_id, ':school_id' => $school_id]);
 
             $pdo->commit();
-            
+
             // Clear session and redirect to login
             $_SESSION = [];
             if (ini_get("session.use_cookies")) {
                 $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000,
-                    $params["path"], $params["domain"],
-                    $params["secure"], $params["httponly"]
+                setcookie(
+                    session_name(),
+                    '',
+                    time() - 42000,
+                    $params["path"],
+                    $params["domain"],
+                    $params["secure"],
+                    $params["httponly"]
                 );
             }
             session_destroy();
-            
+
             header('Location: ' . BASE_URL . 'login.php');
             exit;
         } catch (Exception $e) {
@@ -280,8 +285,8 @@ require_once '../../../includes/header.php';
 
 <!-- Metadata div for Javascript flash alerts -->
 <div id="profile-page-data"
-     data-flash-success="<?php echo sanitize($flash_success); ?>"
-     data-flash-error="<?php echo sanitize($flash_error); ?>">
+    data-flash-success="<?php echo sanitize($flash_success); ?>"
+    data-flash-error="<?php echo sanitize($flash_error); ?>">
 </div>
 
 <div class="row">
@@ -320,14 +325,14 @@ require_once '../../../includes/header.php';
                             <div class="tab-pane fade show active" id="tab-avatar" role="tabpanel" aria-labelledby="tab-avatar-btn">
                                 <h5 class="fw-bold mb-1 font-heading">Profile Picture</h5>
                                 <p class="text-xs text-muted mb-4">Upload a high-quality photo to update your dashboard avatar display.</p>
-                                
+
                                 <form action="index.php" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                     <input type="hidden" name="action" value="update_avatar">
-                                    
+
                                     <div class="d-flex flex-column flex-sm-row align-items-center gap-4 py-3">
                                         <div class="avatar-preview-wrapper position-relative">
-                                            <?php 
+                                            <?php
                                             $avatar_url = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300";
                                             if (!empty($user['avatar'])) {
                                                 $path = "../../../uploads/profile/" . $user['avatar'];
@@ -360,11 +365,11 @@ require_once '../../../includes/header.php';
                             <div class="tab-pane fade" id="tab-about" role="tabpanel" aria-labelledby="tab-about-btn">
                                 <h5 class="fw-bold mb-1 font-heading">About</h5>
                                 <p class="text-xs text-muted mb-4">Set your demographic preferences and write a short biography introduction.</p>
-                                
+
                                 <form action="index.php" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                     <input type="hidden" name="action" value="update_about">
-                                    
+
                                     <div class="mb-4">
                                         <label class="form-label-admin d-block mb-3">Gender Selection</label>
                                         <div class="d-flex align-items-center gap-4">
@@ -382,12 +387,12 @@ require_once '../../../includes/header.php';
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label for="bio" class="form-label-admin">Biographical Statement</label>
                                         <textarea id="bio" name="bio" class="form-control-admin" rows="5" placeholder="Write something about yourself..."><?php echo sanitize($user['bio'] ?? ''); ?></textarea>
                                     </div>
-                                    
+
                                     <hr class="my-4">
                                     <div class="d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary px-4">Save Changes</button>
@@ -399,11 +404,11 @@ require_once '../../../includes/header.php';
                             <div class="tab-pane fade" id="tab-contact" role="tabpanel" aria-labelledby="tab-contact-btn">
                                 <h5 class="fw-bold mb-1 font-heading">Contact Details</h5>
                                 <p class="text-xs text-muted mb-4">Manage your administrative name, contact phone numbers, online link, and office location address.</p>
-                                
+
                                 <form action="index.php" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                     <input type="hidden" name="action" value="update_contact">
-                                    
+
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
                                             <label for="first_name" class="form-label-admin">First Name <span class="text-danger">*</span></label>
@@ -414,7 +419,7 @@ require_once '../../../includes/header.php';
                                             <input type="text" id="last_name" name="last_name" class="form-control-admin" required value="<?php echo sanitize($user['last_name'] ?? ''); ?>">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
                                             <label for="phone" class="form-label-admin">Primary Phone</label>
@@ -425,7 +430,7 @@ require_once '../../../includes/header.php';
                                             <input type="text" id="alternate_phone" name="alternate_phone" class="form-control-admin" value="<?php echo sanitize($user['alternate_phone'] ?? ''); ?>">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
                                             <label for="email" class="form-label-admin">Email Address <span class="text-danger">*</span></label>
@@ -436,7 +441,7 @@ require_once '../../../includes/header.php';
                                             <input type="url" id="website" name="website" class="form-control-admin" placeholder="https://example.com" value="<?php echo sanitize($user['website'] ?? ''); ?>">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-4">
                                             <label for="pincode" class="form-label-admin">Pincode</label>
@@ -451,7 +456,7 @@ require_once '../../../includes/header.php';
                                             <input type="text" id="state" name="state" class="form-control-admin" value="<?php echo sanitize($user['state'] ?? ''); ?>">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-4">
                                             <label for="country" class="form-label-admin">Country</label>
@@ -462,7 +467,7 @@ require_once '../../../includes/header.php';
                                             <input type="text" id="address" name="address" class="form-control-admin" value="<?php echo sanitize($user['address'] ?? ''); ?>">
                                         </div>
                                     </div>
-                                    
+
                                     <hr class="my-4">
                                     <div class="d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary px-4">Save Changes</button>
@@ -474,7 +479,7 @@ require_once '../../../includes/header.php';
                             <div class="tab-pane fade" id="tab-password" role="tabpanel" aria-labelledby="tab-password-btn">
                                 <h5 class="fw-bold mb-1 font-heading">Update Password</h5>
                                 <p class="text-xs text-muted mb-4">Set a new secure password for your administrator profile credentials.</p>
-                                
+
                                 <form action="index.php" method="POST">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                                     <input type="hidden" name="action" value="update_password">
@@ -504,7 +509,7 @@ require_once '../../../includes/header.php';
                             <div class="tab-pane fade" id="tab-support" role="tabpanel" aria-labelledby="tab-support-btn">
                                 <h5 class="fw-bold mb-1 font-heading">Support Section</h5>
                                 <p class="text-xs text-muted mb-4">Get in touch with our Sales & Support representatives for system help and billing assistance.</p>
-                                
+
                                 <div class="row g-3">
                                     <!-- Sales Helpline -->
                                     <div class="col-md-6">
@@ -518,7 +523,7 @@ require_once '../../../includes/header.php';
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Support Helpline -->
                                     <div class="col-md-6">
                                         <div class="p-3 border rounded-3 support-info-box d-flex align-items-center gap-3">
@@ -531,7 +536,7 @@ require_once '../../../includes/header.php';
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- WhatsApp Sales -->
                                     <div class="col-md-6">
                                         <div class="p-3 border rounded-3 support-info-box d-flex align-items-center gap-3">
@@ -544,7 +549,7 @@ require_once '../../../includes/header.php';
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- WhatsApp Support -->
                                     <div class="col-md-6">
                                         <div class="p-3 border rounded-3 support-info-box d-flex align-items-center gap-3">
@@ -557,7 +562,7 @@ require_once '../../../includes/header.php';
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Support Email -->
                                     <div class="col-md-12">
                                         <div class="p-3 border rounded-3 support-info-box d-flex align-items-center gap-3">
@@ -577,7 +582,7 @@ require_once '../../../includes/header.php';
                             <div class="tab-pane fade" id="tab-delete" role="tabpanel" aria-labelledby="tab-delete-btn">
                                 <h5 class="fw-bold mb-1 font-heading text-danger">Delete Account</h5>
                                 <p class="text-xs text-muted mb-4">Permanently erase your administrator settings and account database information.</p>
-                                
+
                                 <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center gap-3 p-3 mb-4">
                                     <i class="ph-bold ph-warning-circle fs-4 text-danger"></i>
                                     <div>
@@ -585,11 +590,11 @@ require_once '../../../includes/header.php';
                                         <span class="text-xs text-danger">Permanently delete your account. This action is irreversible.</span>
                                     </div>
                                 </div>
-                                
+
                                 <p class="text-xs text-muted">
                                     To delete your live SaaS tenant instance, please submit a formal request via the Support Email Desk or contact the admin panel billing support line directly.
                                 </p>
-                                
+
                                 <hr class="my-4">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-danger px-4" id="btn-delete-account">Delete My Account</button>

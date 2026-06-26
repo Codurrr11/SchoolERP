@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch statuses
-$stmt = $pdo->prepare("SELECT * FROM lead_statuses WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM lead_statuses WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $statuses = $stmt->fetchAll();
 
@@ -245,25 +245,23 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </td>
 
                                         <!-- Actions -->
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <!-- Edit Button -->
-                                                <button type="button" 
-                                                        class="btn btn-xs btn-outline-primary py-1 px-2 text-xxs font-heading edit-status-btn" 
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <button type="button"
+                                                        class="teacher-action-btn action-edit edit-status-btn"
                                                         title="Edit Status"
                                                         data-id="<?php echo $stat['id']; ?>"
                                                         data-name="<?php echo sanitize($stat['name']); ?>"
                                                         data-color="<?php echo sanitize($stat['color']); ?>">
-                                                    Edit
+                                                    <i class="ph-light ph-pencil"></i>
                                                 </button>
 
-                                                <!-- Delete Button -->
-                                                <button type="button" 
-                                                        class="btn btn-xs btn-outline-danger py-1 px-2 text-xxs font-heading delete-status-btn" 
+                                                <button type="button"
+                                                        class="teacher-action-btn action-delete delete-status-btn"
                                                         title="Delete Status"
                                                         data-id="<?php echo $stat['id']; ?>"
                                                         data-name="<?php echo sanitize($stat['name']); ?>">
-                                                    Delete
+                                                    <i class="ph-light ph-trash"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -281,8 +279,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Add Modal -->
 <div class="modal fade" id="addStatusModal" tabindex="-1" aria-labelledby="addStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content shadow border-0" style="border-radius: 12px;">
-            <div class="modal-header bg-light py-2.5 px-3">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-2 px-3">
                 <h6 class="modal-title font-heading fw-bold" id="addStatusModalLabel">Add Lead Status</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -304,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer p-2.5 bg-light">
+                <div class="modal-footer modal-footer-admin p-2">
                     <button type="button" class="btn btn-xs btn-admin-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-xs btn-primary font-heading px-3">Create</button>
                 </div>
@@ -316,8 +314,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <!-- Edit Modal -->
 <div class="modal fade" id="editStatusModal" tabindex="-1" aria-labelledby="editStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
-        <div class="modal-content shadow border-0" style="border-radius: 12px;">
-            <div class="modal-header bg-light py-2.5 px-3">
+        <div class="modal-content">
+            <div class="modal-header modal-header-admin py-2 px-3">
                 <h6 class="modal-title font-heading fw-bold" id="editStatusModalLabel">Edit Lead Status</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -340,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer p-2.5 bg-light">
+                <div class="modal-footer modal-footer-admin p-2">
                     <button type="button" class="btn btn-xs btn-admin-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-xs btn-primary font-heading px-3">Save Changes</button>
                 </div>

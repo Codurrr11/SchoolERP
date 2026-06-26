@@ -23,22 +23,20 @@ $stmt = $pdo->prepare("SELECT * FROM academic_sessions WHERE school_id = :school
 $stmt->execute([':school_id' => $school_id]);
 $all_sessions = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY section_name ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_sections = $stmt->fetchAll();
 
 $sections_by_class = [];
-foreach ($all_classes as $c) {
-    foreach ($all_sections as $s) {
-        $sections_by_class[$c['id']][] = [
-            'id' => $s['id'],
-            'name' => $s['name']
-        ];
-    }
+foreach ($all_sections as $s) {
+    $sections_by_class[$s['class_id']][] = [
+        'id' => $s['id'],
+        'name' => $s['section_name']
+    ];
 }
 
 // ─── POST ACTIONS HANDLING ──────────────────────────────────────────────────

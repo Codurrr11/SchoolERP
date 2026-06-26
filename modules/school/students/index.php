@@ -82,7 +82,7 @@ $stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER 
 $stmt->execute([':school_id' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY section_name ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_sections = $stmt->fetchAll();
 
@@ -93,13 +93,11 @@ $all_parents = $stmt->fetchAll();
 
 
 $sections_by_class = [];
-foreach ($all_classes as $c) {
-    foreach ($all_sections as $s) {
-        $sections_by_class[$c['id']][] = [
-            'id' => $s['id'],
-            'name' => $s['name']
-        ];
-    }
+foreach ($all_sections as $s) {
+    $sections_by_class[$s['class_id']][] = [
+        'id' => $s['id'],
+        'name' => $s['section_name']
+    ];
 }
 
 // Fetch fee structures grouped by class to pass to JavaScript

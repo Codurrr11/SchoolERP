@@ -13,7 +13,7 @@ $sessions = $stmt_sess->fetchAll(PDO::FETCH_COLUMN);
 $current_session = $_GET['session'] ?? ($_SESSION['academic_session_name'] ?? ($sessions[0] ?? ''));
 
 // 2. Fetch all classes for checkbox list
-$stmt_cl = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt_cl = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt_cl->execute([':school_id' => $school_id]);
 $all_classes = $stmt_cl->fetchAll();
 

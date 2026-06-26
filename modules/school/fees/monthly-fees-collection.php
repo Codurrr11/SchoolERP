@@ -22,7 +22,7 @@ function get_col_label($col) {
 }
 
 // 1. Fetch classes
-$stmt_cl = $pdo->prepare("SELECT id, name FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt_cl = $pdo->prepare("SELECT id, name FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt_cl->execute([':school_id' => $school_id]);
 $classes = $stmt_cl->fetchAll();
 

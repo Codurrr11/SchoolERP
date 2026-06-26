@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 25, 2026 at 01:03 PM
+-- Generation Time: Jun 26, 2026 at 03:16 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -74,20 +74,60 @@ CREATE TABLE `classes` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `school_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `class_name` varchar(50) NOT NULL,
+  `roman_number` varchar(10) DEFAULT NULL,
+  `class_code` varchar(20) DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `status` varchar(20) DEFAULT 'active',
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `classes`
 --
 
-INSERT INTO `classes` (`id`, `school_id`, `name`, `created_at`) VALUES
-(1, 1, 'Class 1', '2026-06-15 10:42:23'),
-(2, 1, 'Class 2', '2026-06-15 10:42:23'),
-(3, 1, 'Class 3', '2026-06-15 10:42:23'),
-(4, 1, 'Class 4', '2026-06-15 10:42:23'),
-(5, 1, 'Nursery', '2026-06-15 10:42:23'),
-(6, 1, 'Class 5', '2026-06-15 10:42:23');
+INSERT INTO `classes` (`id`, `school_id`, `name`, `created_at`, `class_name`, `roman_number`, `class_code`, `sort_order`, `status`, `updated_at`) VALUES
+(1, 1, 'Class 1', '2026-06-15 10:42:23', 'Class 1', 'I', 'C1', 3, 'active', '2026-06-26 07:38:14'),
+(2, 1, 'Class 2', '2026-06-15 10:42:23', 'Class 2', 'II', 'C2', 4, 'active', '2026-06-26 07:38:14'),
+(3, 1, 'Class 3', '2026-06-15 10:42:23', 'Class 3', 'III', 'C3', 5, 'active', '2026-06-26 07:38:14'),
+(4, 1, 'Class 4', '2026-06-15 10:42:23', 'Class 4', 'IV', 'C4', 6, 'active', '2026-06-26 07:38:14'),
+(5, 1, 'Nursery', '2026-06-15 10:42:23', 'Nursery', 'NUR', 'NUR', 0, 'active', '2026-06-26 07:38:14'),
+(6, 1, 'Class 5', '2026-06-15 10:42:23', 'Class 5', 'V', 'C5', 7, 'active', '2026-06-26 07:38:14'),
+(7, 1, 'LKG', '2026-06-26 07:38:14', 'LKG', 'LKG', 'LKG', 1, 'active', '2026-06-26 07:38:14'),
+(8, 1, 'UKG', '2026-06-26 07:38:14', 'UKG', 'UKG', 'UKG', 2, 'active', '2026-06-26 07:38:14'),
+(9, 1, 'Class 6', '2026-06-26 07:38:14', 'Class 6', 'VI', 'C6', 8, 'active', '2026-06-26 07:38:14'),
+(10, 1, 'Class 7', '2026-06-26 07:38:14', 'Class 7', 'VII', 'C7', 9, 'active', '2026-06-26 07:38:14'),
+(11, 1, 'Class 8', '2026-06-26 07:38:14', 'Class 8', 'VIII', 'C8', 10, 'active', '2026-06-26 07:38:14'),
+(12, 1, 'Class 9', '2026-06-26 07:38:14', 'Class 9', 'IX', 'C9', 12, 'active', '2026-06-26 12:35:02'),
+(13, 1, 'Class 10', '2026-06-26 07:38:14', 'Class 10', 'X', 'C10', 13, 'active', '2026-06-26 12:35:02'),
+(14, 1, 'Class 11', '2026-06-26 07:38:14', 'Class 11', 'XI', 'C11', 14, 'active', '2026-06-26 12:35:02'),
+(15, 1, 'Class 12', '2026-06-26 07:38:14', 'Class 12', 'XII', 'C12', 15, 'active', '2026-06-26 12:35:03');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dashboard_todos`
+--
+
+CREATE TABLE `dashboard_todos` (
+  `id` int(11) NOT NULL,
+  `school_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `due_label` varchar(100) DEFAULT NULL,
+  `is_completed` tinyint(1) NOT NULL DEFAULT 0,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `dashboard_todos`
+--
+
+INSERT INTO `dashboard_todos` (`id`, `school_id`, `user_id`, `title`, `due_label`, `is_completed`, `sort_order`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, 'Chai Peeni hai', 'Chai', 0, 0, '2026-06-26 18:41:30', '2026-06-26 18:41:30');
 
 -- --------------------------------------------------------
 
@@ -286,24 +326,25 @@ CREATE TABLE `leads` (
   `scheduled_at` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `leads`
 --
 
-INSERT INTO `leads` (`id`, `school_id`, `session_id`, `class_id`, `source`, `referred_by`, `first_name`, `last_name`, `email`, `mobile_no`, `gender`, `dob`, `mother_name`, `mother_qualification`, `mother_address`, `mother_occupation`, `mother_official_address`, `mother_income`, `mother_email`, `mother_mobile`, `father_name`, `father_qualification`, `father_address`, `father_occupation`, `father_official_address`, `father_income`, `father_email`, `father_mobile`, `nationality`, `religion`, `category`, `aadhar_no`, `last_school_name`, `last_school_class`, `last_school_affiliation`, `pincode`, `city`, `state`, `country`, `address`, `status`, `remark`, `photo`, `created_by`, `assigned_to`, `scheduled_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 1, 1, NULL, NULL, 'Jsjsjs', 'Djdjnd', NULL, '9464916691', NULL, NULL, 'Dbjdnd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', 'Dndjjd', 'Interested', '', NULL, 2, NULL, NULL, '2026-06-19 04:24:04', '2026-06-25 07:09:03', '2026-06-25 07:09:03'),
-(2, 1, 1, 2, NULL, NULL, 'Pulkit', 'Yadav', NULL, '7303527855', NULL, NULL, 'Poonam Yadav', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Brijesh Yadav', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', 'Vivek Khand Lucknow UTTAR PRADESH', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-04-28 10:30:57', '2026-06-22 07:31:20', NULL),
-(3, 1, 1, 1, NULL, NULL, 'Vinod', 'Singh', NULL, '9198110991', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-04-05 17:41:55', '2026-06-22 07:31:20', NULL),
-(4, 1, 1, 3, NULL, NULL, 'Kvvya', 'Gupta', NULL, '8899889900', NULL, NULL, 'Amita', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Manoj', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-03-18 07:58:46', '2026-06-22 07:31:20', NULL),
-(5, 1, 1, 3, NULL, NULL, 'Aman', 'Kumar', NULL, '9900000099', NULL, NULL, 'Maya', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kishor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', 'Bhopal', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-03-18 06:56:25', '2026-06-22 07:31:20', NULL),
-(6, 1, 1, 2, NULL, NULL, 'Akash', 'Aksh', NULL, '9909990011', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-03-18 06:26:27', '2026-06-22 07:31:20', NULL),
-(7, 1, 1, 1, NULL, NULL, 'Amit', 'Sharma', NULL, '7867676767', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-01-28 13:11:45', '2026-06-22 07:31:20', NULL),
-(8, 1, 1, 1, NULL, NULL, 'Amit', '', NULL, '5645453434', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', '', NULL, 2, NULL, NULL, '2026-01-28 13:10:53', '2026-06-22 07:31:20', NULL),
-(9, 1, 1, 2, NULL, NULL, 'Test', '', NULL, '1234567890', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', '', NULL, 2, NULL, NULL, '2026-01-22 09:45:02', '2026-06-22 07:31:20', NULL),
-(10, 1, 1, 2, '', '', 'VANSI', 'PANDEY', '', '7007300825', NULL, NULL, 'JYOTI', '', '', '', '', '', '', '', 'PRANESH', '', '', '', '', '', '', '', 'INDIAN', '', '', '', '', '', '', '', '', '', 'India', 'KATHARI BAZAR', 'Interested', 'Admission created', NULL, 2, NULL, '2026-01-20 20:06:00', '2026-01-20 14:32:55', '2026-06-22 07:43:59', NULL);
+INSERT INTO `leads` (`id`, `school_id`, `session_id`, `class_id`, `source`, `referred_by`, `first_name`, `last_name`, `email`, `mobile_no`, `gender`, `dob`, `mother_name`, `mother_qualification`, `mother_address`, `mother_occupation`, `mother_official_address`, `mother_income`, `mother_email`, `mother_mobile`, `father_name`, `father_qualification`, `father_address`, `father_occupation`, `father_official_address`, `father_income`, `father_email`, `father_mobile`, `nationality`, `religion`, `category`, `aadhar_no`, `last_school_name`, `last_school_class`, `last_school_affiliation`, `pincode`, `city`, `state`, `country`, `address`, `status`, `remark`, `photo`, `created_by`, `assigned_to`, `scheduled_at`, `created_at`, `updated_at`, `deleted_at`, `sort_order`) VALUES
+(1, 1, 1, 1, NULL, NULL, 'Jsjsjs', 'Djdjnd', NULL, '9464916691', NULL, NULL, 'Dbjdnd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', 'Dndjjd', 'Interested', '', NULL, 2, NULL, NULL, '2026-06-19 04:24:04', '2026-06-26 12:49:29', '2026-06-25 07:09:03', 1),
+(2, 1, 1, 2, NULL, NULL, 'Pulkit', 'Yadav', NULL, '7303527855', NULL, NULL, 'Poonam Yadav', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Brijesh Yadav', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', 'Vivek Khand Lucknow UTTAR PRADESH', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-04-28 10:30:57', '2026-06-26 13:14:04', '2026-06-26 13:14:04', 2),
+(3, 1, 1, 1, NULL, NULL, 'Vinod', 'Singh', NULL, '9198110991', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-04-05 17:41:55', '2026-06-26 12:49:29', NULL, 3),
+(4, 1, 1, 3, NULL, NULL, 'Kvvya', 'Gupta', NULL, '8899889900', NULL, NULL, 'Amita', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Manoj', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-03-18 07:58:46', '2026-06-26 12:49:29', NULL, 4),
+(5, 1, 1, 3, NULL, NULL, 'Aman', 'Kumar', NULL, '9900000099', NULL, NULL, 'Maya', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Kishor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', 'Bhopal', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-03-18 06:56:25', '2026-06-26 12:49:29', NULL, 5),
+(6, 1, 1, 2, NULL, NULL, 'Akash', 'Aksh', NULL, '9909990011', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-03-18 06:26:27', '2026-06-26 12:49:29', NULL, 6),
+(7, 1, 1, 1, NULL, NULL, 'Amit', 'Sharma', NULL, '7867676767', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', 'Admission created', NULL, 2, NULL, NULL, '2026-01-28 13:11:45', '2026-06-26 12:49:29', NULL, 7),
+(8, 1, 1, 1, NULL, NULL, 'Amit', '', NULL, '5645453434', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', '', NULL, 2, NULL, NULL, '2026-01-28 13:10:53', '2026-06-26 12:49:29', NULL, 8),
+(9, 1, 1, 2, NULL, NULL, 'Test', '', NULL, '1234567890', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'India', '', 'Interested', '', NULL, 2, NULL, NULL, '2026-01-22 09:45:02', '2026-06-26 12:49:29', NULL, 9),
+(10, 1, 1, 2, '', '', 'VANSI', 'PANDEY', '', '7007300825', 'female', NULL, 'JYOTI', '', '', '', '', '', '', '', 'PRANESH', '', '', '', '', '', '', '', 'INDIAN', '', '', '', '', '', '', '', '', '', 'India', 'KATHARI BAZAR', 'Admission Created', 'Admission created', NULL, 2, NULL, '2026-01-20 20:06:00', '2026-01-20 14:32:55', '2026-06-26 12:49:29', NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -341,21 +382,22 @@ CREATE TABLE `lead_statuses` (
   `school_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(50) NOT NULL,
   `color` varchar(20) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `sort_order` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `lead_statuses`
 --
 
-INSERT INTO `lead_statuses` (`id`, `school_id`, `name`, `color`, `created_at`) VALUES
-(1, 1, 'Interested', 'success', '2026-06-22 07:31:20'),
-(2, 1, 'not interested', 'danger', '2026-06-22 07:31:20'),
-(3, 1, 'ADMIN', 'success-light', '2026-06-22 07:31:20'),
-(4, 1, 'follow-up', 'info', '2026-06-22 07:31:20'),
-(5, 1, 'call back', 'warning', '2026-06-22 07:31:20'),
-(6, 1, 'Intersted', 'danger-dark', '2026-06-22 07:31:20'),
-(7, 1, 'Admission Created', 'teal', '2026-06-22 07:31:20');
+INSERT INTO `lead_statuses` (`id`, `school_id`, `name`, `color`, `created_at`, `sort_order`) VALUES
+(1, 1, 'Interested', 'success', '2026-06-22 07:31:20', 1),
+(2, 1, 'not interested', 'danger', '2026-06-22 07:31:20', 2),
+(3, 1, 'ADMIN', 'success-light', '2026-06-22 07:31:20', 3),
+(4, 1, 'follow-up', 'info', '2026-06-22 07:31:20', 4),
+(5, 1, 'call back', 'warning', '2026-06-22 07:31:20', 5),
+(6, 1, 'Intersted', 'danger-dark', '2026-06-22 07:31:20', 6),
+(7, 1, 'Admission Created', 'teal', '2026-06-22 07:31:20', 7);
 
 -- --------------------------------------------------------
 
@@ -531,17 +573,52 @@ INSERT INTO `schools` (`id`, `name`, `slug`, `email`, `phone`, `address`, `logo`
 CREATE TABLE `sections` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `school_id` bigint(20) UNSIGNED NOT NULL,
+  `class_id` bigint(20) UNSIGNED NOT NULL,
+  `section_name` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `sort_order` int(11) DEFAULT 0,
+  `class_teacher_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `capacity` int(11) DEFAULT NULL,
+  `status` varchar(20) DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `sections`
 --
 
-INSERT INTO `sections` (`id`, `school_id`, `name`, `created_at`) VALUES
-(1, 1, 'A', '2026-06-15 10:42:23'),
-(2, 1, 'B', '2026-06-15 10:42:23');
+INSERT INTO `sections` (`id`, `school_id`, `class_id`, `section_name`, `name`, `sort_order`, `class_teacher_id`, `capacity`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'A', 'A', 1, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(2, 1, 2, 'A', 'A', 2, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(3, 1, 3, 'A', 'A', 3, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(4, 1, 4, 'A', 'A', 4, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(5, 1, 5, 'A', 'A', 5, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(6, 1, 6, 'A', 'A', 6, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(7, 1, 7, 'A', 'A', 7, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(8, 1, 8, 'A', 'A', 8, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(9, 1, 9, 'A', 'A', 9, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(10, 1, 10, 'A', 'A', 10, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(11, 1, 11, 'A', 'A', 11, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(12, 1, 12, 'A', 'A', 12, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(13, 1, 13, 'A', 'A', 13, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(14, 1, 14, 'A', 'A', 14, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(15, 1, 15, 'A', 'A', 15, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(16, 1, 1, 'B', 'B', 16, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(17, 1, 2, 'B', 'B', 17, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(18, 1, 3, 'B', 'B', 18, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(19, 1, 4, 'B', 'B', 19, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(20, 1, 5, 'B', 'B', 20, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(21, 1, 6, 'B', 'B', 21, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(22, 1, 7, 'B', 'B', 22, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(23, 1, 8, 'B', 'B', 23, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(24, 1, 9, 'B', 'B', 24, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(25, 1, 10, 'B', 'B', 25, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(26, 1, 11, 'B', 'B', 26, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(27, 1, 12, 'B', 'B', 27, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(28, 1, 13, 'B', 'B', 28, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(29, 1, 14, 'B', 'B', 29, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38'),
+(30, 1, 15, 'B', 'B', 30, NULL, NULL, 'active', '2026-06-26 07:38:14', '2026-06-26 12:48:38');
 
 -- --------------------------------------------------------
 
@@ -671,12 +748,13 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `school_id`, `user_id`, `session_id`, `class_id`, `section_id`, `apaar_id`, `pen_no`, `registration_no_prefix`, `registration_no`, `enrollment_no_prefix`, `enrollment_no`, `sr_no_prefix`, `sr_no`, `general_reg_no`, `admission_no_prefix`, `admission_no`, `admission_date`, `srn_no`, `roll_no`, `stream`, `education_medium`, `photo`, `profile_file`, `referred_by`, `is_rte`, `rte_application_no`, `enrolled_session`, `enrolled_class_id`, `enrolled_year`, `special_needs`, `is_bpl`, `house_block`, `first_name`, `last_name`, `father_name`, `mobile_no`, `alternate_no`, `whatsapp_no`, `email`, `gender`, `blood_group`, `height`, `weight`, `dob`, `place_of_birth`, `dob_certificate`, `dob_certificate_no`, `total_fees`, `total_paid`, `total_discount`, `fine_amount`, `biometric_code`, `status`, `created_at`, `updated_at`, `deleted_at`, `income_app_no`, `caste_app_no`, `domicile_app_no`, `nationality`, `religion`, `category`, `caste`, `category_certificate`, `aadhar_no`, `aadhar_file`, `tc_no`, `tc_issue_date`, `tc_file`, `scholarship_id`, `scholarship_password`, `govt_student_id`, `govt_family_id`, `samagra_id`, `bank_name`, `bank_branch`, `ifsc_code`, `bank_account_holder`, `bank_account_no`, `pan_no`, `mother_name`, `mother_qualification`, `mother_address`, `mother_occupation`, `mother_official_address`, `mother_income`, `mother_email`, `mother_mobile`, `mother_aadhar`, `mother_photo`, `mother_aadhar_file`, `father_qualification`, `father_address`, `father_occupation`, `father_official_address`, `father_income`, `father_email`, `father_mobile`, `father_aadhar`, `father_photo`, `father_aadhar_file`, `guardian_name`, `guardian_qualification`, `guardian_address`, `guardian_occupation`, `guardian_official_address`, `guardian_income`, `guardian_email`, `guardian_mobile`, `guardian_aadhar`, `guardian_photo`, `guardian_aadhar_file`, `transport_route_id`) VALUES
-(18, 1, 23, 1, 2, 1, 'AP-10112233', 'PEN-9988771', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5001', '2026-04-01', NULL, '101', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'A-Block, Vasant Kunj', 'Kunal', 'Verma', 'Rajiv Verma', '9123456780', NULL, NULL, 'kunal.v@example.in', 'male', 'B+', '135', '32', '2016-05-10', 'New Delhi', NULL, NULL, 60000.00, 30000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-25 07:25:18', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'General', 'Khatri', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'HDFC Bank', NULL, 'HDFC0001234', NULL, '50100234567891', NULL, 'Meera Verma', NULL, NULL, 'School Teacher', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Civil Engineer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(19, 1, 24, 1, 2, 2, 'AP-22334455', 'PEN-8877662', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5002', '2026-04-02', NULL, '201', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'C-Wing, Kharadi', 'Sneha', 'Patil', 'Ramesh Patil', '9123456781', NULL, NULL, 'sneha.p@example.in', 'female', 'O+', '140', '35', '2015-08-22', 'Pune', NULL, NULL, 65000.00, 65000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-23 08:30:18', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'OBC', 'Maratha', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'State Bank of India', NULL, 'SBIN0004567', NULL, '302010405060', NULL, 'Anita Patil', NULL, NULL, 'Homemaker', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Business Owner', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(20, 1, 25, 1, 3, 1, 'AP-33445566', 'PEN-7766553', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5003', '2026-04-03', NULL, '301', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'Villa 4, Indiranagar', 'Rohan', 'Iyer', 'Karthik Iyer', '9123456782', NULL, NULL, 'rohan.i@example.in', 'male', 'A-', '145', '38', '2014-11-15', 'Chennai', NULL, NULL, 70000.00, 10000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-23 08:30:18', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'General', 'Brahmin', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ICICI Bank', NULL, 'ICIC0000001', NULL, '000101234567', NULL, 'Lakshmi Iyer', NULL, NULL, 'Architect', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Cardiologist', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(21, 1, 26, 1, 4, 2, 'AP-44556677', 'PEN-6655444', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5004', '2026-04-04', NULL, '401', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'Sector 17, Block D', 'Priya', 'Singh', 'Vikram Singh', '9123456783', NULL, NULL, 'priya.s@example.in', 'female', 'AB+', '150', '42', '2013-02-18', 'Chandigarh', NULL, NULL, 75000.00, 75000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-23 08:30:18', NULL, NULL, NULL, NULL, 'INDIAN', 'Sikh', 'General', 'Rajput', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Punjab National Bank', NULL, 'PUNB0123456', NULL, '44556677889900', NULL, 'Suman Singh', NULL, NULL, 'Bank Manager', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Army Officer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
-(22, 1, 27, 1, 6, 1, 'AP-55667788', 'PEN-5544335', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5005', '2026-04-05', NULL, NULL, NULL, 'English', 'uploads/students/photo_6a3b7ed06bb83.jpeg', NULL, NULL, 'yes', NULL, NULL, NULL, NULL, 'no', 'no', 'Jubilee Hills, Phase 2', 'Aditya', 'Rao', NULL, '9123456784', NULL, NULL, 'aditya.r@example.in', 'male', 'O-', '155', '45', '2012-07-30', 'Hyderabad', NULL, NULL, 25000.00, 0.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-25 07:23:43', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'General', 'Rao', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Axis Bank', NULL, 'UTIB0007890', NULL, '998877665544', NULL, 'Kavya Rao', NULL, NULL, 'Freelance Writer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Software Developer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(23, 1, 28, 1, 2, 1, 'APR-998835', 'PEN-887743', 'Prefix', '238', '26', '12345684', '26', '3434350', NULL, '2026', 'ADM-2026-0011', NULL, 'SRN-55443', 'ROLL-Q-112', 'Science', 'English', 'uploads/students/photo_6a34fb4ae94b1.jpg', NULL, 'Direct', 'no', NULL, NULL, 1, NULL, 'no', 'no', NULL, 'Spiderman', 'yadav', NULL, '9545698125', NULL, '9545698125', 'spiderman@gmail.com', 'male', NULL, '160', '62', '2001-08-11', 'Colombia', NULL, 'DOBC-1094', 0.00, 0.00, 0.00, 0.00, 'BIO-S103', 'active', '2026-06-19 08:18:19', '2026-06-24 12:56:29', NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Wonder Women', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'thor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(18, 1, 23, 1, 2, 2, 'AP-10112233', 'PEN-9988771', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5001', '2026-04-01', NULL, '101', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'A-Block, Vasant Kunj', 'Kunal', 'Verma', 'Rajiv Verma', '9123456780', NULL, NULL, 'kunal.v@example.in', 'male', 'B+', '135', '32', '2016-05-10', 'New Delhi', NULL, NULL, 60000.00, 30000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-26 07:38:14', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'General', 'Khatri', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'HDFC Bank', NULL, 'HDFC0001234', NULL, '50100234567891', NULL, 'Meera Verma', NULL, NULL, 'School Teacher', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Civil Engineer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(19, 1, 24, 1, 2, 17, 'AP-22334455', 'PEN-8877662', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5002', '2026-04-02', NULL, '201', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'C-Wing, Kharadi', 'Sneha', 'Patil', 'Ramesh Patil', '9123456781', NULL, NULL, 'sneha.p@example.in', 'female', 'O+', '140', '35', '2015-08-22', 'Pune', NULL, NULL, 65000.00, 65000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-26 07:38:14', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'OBC', 'Maratha', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'State Bank of India', NULL, 'SBIN0004567', NULL, '302010405060', NULL, 'Anita Patil', NULL, NULL, 'Homemaker', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Business Owner', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(20, 1, 25, 1, 3, 3, 'AP-33445566', 'PEN-7766553', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5003', '2026-04-03', NULL, '301', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'Villa 4, Indiranagar', 'Rohan', 'Iyer', 'Karthik Iyer', '9123456782', NULL, NULL, 'rohan.i@example.in', 'male', 'A-', '145', '38', '2014-11-15', 'Chennai', NULL, NULL, 70000.00, 10000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-26 07:38:14', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'General', 'Brahmin', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ICICI Bank', NULL, 'ICIC0000001', NULL, '000101234567', NULL, 'Lakshmi Iyer', NULL, NULL, 'Architect', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Cardiologist', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(21, 1, 26, 1, 4, 19, 'AP-44556677', 'PEN-6655444', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5004', '2026-04-04', NULL, '401', NULL, 'English', NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', 'no', 'Sector 17, Block D', 'Priya', 'Singh', 'Vikram Singh', '9123456783', NULL, NULL, 'priya.s@example.in', 'female', 'AB+', '150', '42', '2013-02-18', 'Chandigarh', NULL, NULL, 75000.00, 75000.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-26 07:38:14', NULL, NULL, NULL, NULL, 'INDIAN', 'Sikh', 'General', 'Rajput', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Punjab National Bank', NULL, 'PUNB0123456', NULL, '44556677889900', NULL, 'Suman Singh', NULL, NULL, 'Bank Manager', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Army Officer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2),
+(22, 1, 27, 1, 6, 6, 'AP-55667788', 'PEN-5544335', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026', '5005', '2026-04-05', NULL, NULL, NULL, 'English', 'uploads/students/photo_6a3b7ed06bb83.jpeg', NULL, NULL, 'yes', NULL, NULL, NULL, NULL, 'no', 'no', 'Jubilee Hills, Phase 2', 'Aditya', 'Rao', NULL, '9123456784', NULL, NULL, 'aditya.r@example.in', 'male', 'O-', '155', '45', '2012-07-30', 'Hyderabad', NULL, NULL, 25000.00, 0.00, 0.00, 0.00, NULL, 'active', '2026-06-17 11:46:59', '2026-06-26 07:38:14', NULL, NULL, NULL, NULL, 'INDIAN', 'Hindu', 'General', 'Rao', NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Axis Bank', NULL, 'UTIB0007890', NULL, '998877665544', NULL, 'Kavya Rao', NULL, NULL, 'Freelance Writer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, 'Software Developer', NULL, NULL, NULL, NULL, '[Aadhaar Redacted]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(23, 1, 28, 1, 2, 2, 'APR-998835', 'PEN-887743', 'Prefix', '238', '26', '12345684', '26', '3434350', NULL, '2026', 'ADM-2026-0011', NULL, 'SRN-55443', 'ROLL-Q-112', 'Science', 'English', 'uploads/students/photo_6a34fb4ae94b1.jpg', NULL, 'Direct', 'no', NULL, NULL, 1, NULL, 'no', 'no', NULL, 'Spiderman', 'yadav', NULL, '9545698125', NULL, '9545698125', 'spiderman@gmail.com', 'male', NULL, '160', '62', '2001-08-11', 'Colombia', NULL, 'DOBC-1094', 0.00, 0.00, 0.00, 0.00, 'BIO-S103', 'active', '2026-06-19 08:18:19', '2026-06-26 07:38:14', NULL, NULL, NULL, NULL, 'INDIAN', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Wonder Women', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'thor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(24, 1, 30, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', 'no', NULL, NULL, NULL, NULL, 'no', 'no', NULL, 'VANSI', 'PANDEY', 'PRANESH', '7007300825', NULL, NULL, NULL, 'female', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00, NULL, 'active', '2026-06-26 07:22:03', '2026-06-26 12:52:03', '2026-06-26 09:22:03', NULL, NULL, NULL, 'INDIAN', '', '', NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'JYOTI', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -784,7 +862,7 @@ CREATE TABLE `student_migrations` (
 --
 
 INSERT INTO `student_migrations` (`id`, `school_id`, `from_session_id`, `to_session_id`, `from_class_id`, `to_class_id`, `from_section_id`, `to_section_id`, `total_students`, `student_ids`, `migrated_by`, `created_at`) VALUES
-(1, 1, 1, 1, 1, 2, 1, 1, 2, '[18,23]', 'Brighton Admin', '2026-06-24 09:55:27');
+(1, 1, 1, 1, 1, 2, 1, 2, 2, '[18,23]', 'Brighton Admin', '2026-06-24 09:55:27');
 
 -- --------------------------------------------------------
 
@@ -950,10 +1028,10 @@ CREATE TABLE `teacher_classes` (
 
 INSERT INTO `teacher_classes` (`id`, `teacher_id`, `class_id`, `section_id`, `is_class_teacher`) VALUES
 (26, 1, 1, 1, 0),
-(27, 1, 2, 1, 0),
-(28, 1, 3, 1, 0),
-(29, 1, 4, 1, 0),
-(30, 1, 6, 1, 0);
+(27, 1, 2, 2, 0),
+(28, 1, 3, 3, 0),
+(29, 1, 4, 4, 0),
+(30, 1, 6, 6, 0);
 
 -- --------------------------------------------------------
 
@@ -1032,8 +1110,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `school_id`, `role_id`, `username`, `first_name`, `last_name`, `email`, `phone`, `alternate_phone`, `password`, `avatar`, `website`, `gender`, `bio`, `dob`, `address`, `pincode`, `city`, `state`, `country`, `status`, `last_login`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, NULL, 1, NULL, 'Abhishek', 'Tyagi', 'admin@google.com', '9057137074', NULL, '$2y$12$bB0r6YBfbGoRMhmZ/cIlXu86YgiTnAII35nZbopg2oAslW7deeddG', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'active', '2026-06-22 08:02:46', NULL, '2026-06-15 09:32:07', '2026-06-22 08:02:46', NULL),
-(2, 1, 2, NULL, 'Brighton', 'Admin', 'school@admin.com', '', '', '$2y$10$h0tIfAZwBu.WSZfEPR48aONFquuGke0KY0WBcMkUO0IVcW1jGRynO', 'avatar_2_1782206762.jpg', '', 'male', '', NULL, '', '', '', '', '', 'active', '2026-06-25 08:53:50', NULL, '2026-06-15 09:57:29', '2026-06-25 08:53:50', NULL),
+(1, NULL, 1, NULL, 'Abhishek', 'Tyagi', 'admin@google.com', '9057137074', NULL, '$2y$12$bB0r6YBfbGoRMhmZ/cIlXu86YgiTnAII35nZbopg2oAslW7deeddG', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'active', '2026-06-26 10:40:52', NULL, '2026-06-15 09:32:07', '2026-06-26 10:40:52', NULL),
+(2, 1, 2, NULL, 'Brighton', 'Admin', 'school@admin.com', '', '', '$2y$10$h0tIfAZwBu.WSZfEPR48aONFquuGke0KY0WBcMkUO0IVcW1jGRynO', 'avatar_2_1782455765.jpg', '', 'male', '', NULL, '', '', '', '', '', 'active', '2026-06-26 11:08:22', NULL, '2026-06-15 09:57:29', '2026-06-26 11:08:22', NULL),
 (3, 1, 3, 'madhusingh01', 'Madhu', 'Singh', 'Madhu@1994', '9876543213', NULL, '$2y$10$ABLvyUtlKLIzQY1gdi8.jObeyUiTVJsjzfg9yWizaVr.rwmtxYg8S', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-15 10:44:46', '2026-06-18 07:43:57', NULL),
 (21, 1, 4, 'ramesh_gupta', 'Ramesh', 'Gupta', 'ramesh.gupta@example.in', '9876543210', NULL, '$2y$10$80ST6d.yflpp9W0ZH3PbUuM56Kr8EDoDGET.CowGCFUSV2u/H80hC', NULL, NULL, 'male', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-17 11:44:54', '2026-06-17 11:45:58', NULL),
 (22, 1, 4, 'anjali_sharma', 'Anjali', 'Sharma', 'anjali.s@example.in', '9123456789', NULL, '$2y$10$80ST6d.yflpp9W0ZH3PbUuM56Kr8EDoDGET.CowGCFUSV2u/H80hC', NULL, NULL, 'female', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-17 11:44:54', '2026-06-17 11:44:54', NULL),
@@ -1042,7 +1120,8 @@ INSERT INTO `users` (`id`, `school_id`, `role_id`, `username`, `first_name`, `la
 (25, 1, 5, 'rohan_iyer', 'Rohan', 'Iyer', 'rohan.i@example.in', '9123456782', NULL, '$2y$10$80ST6d.yflpp9W0ZH3PbUuM56Kr8EDoDGET.CowGCFUSV2u/H80hC', NULL, NULL, 'male', NULL, '2014-11-15', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-17 11:46:59', '2026-06-17 11:46:59', NULL),
 (26, 1, 5, 'priya_singh', 'Priya', 'Singh', 'priya.s@example.in', '9123456783', NULL, '$2y$10$80ST6d.yflpp9W0ZH3PbUuM56Kr8EDoDGET.CowGCFUSV2u/H80hC', NULL, NULL, 'female', NULL, '2013-02-18', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-17 11:46:59', '2026-06-17 11:46:59', NULL),
 (27, 1, 5, 'aditya_rao', 'Aditya', 'Rao', 'aditya.r@example.in', '9123456784', NULL, '$2y$10$80ST6d.yflpp9W0ZH3PbUuM56Kr8EDoDGET.CowGCFUSV2u/H80hC', NULL, NULL, 'male', NULL, '2012-07-30', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-17 11:46:59', '2026-06-17 11:46:59', NULL),
-(28, 1, 5, 'Spiderman', 'Spiderman', 'yadav', 'spiderman@gmail.com', '9545698125', NULL, '$2y$10$hqeaVz3bCvZD0NsJuL2.geM05LzPXs3CWIom1jdyWqYixKfV/EI/u', NULL, NULL, 'male', NULL, '2001-08-11', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-19 08:18:19', '2026-06-24 12:56:29', NULL);
+(28, 1, 5, 'Spiderman', 'Spiderman', 'yadav', 'spiderman@gmail.com', '9545698125', NULL, '$2y$10$hqeaVz3bCvZD0NsJuL2.geM05LzPXs3CWIom1jdyWqYixKfV/EI/u', NULL, NULL, 'male', NULL, '2001-08-11', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-19 08:18:19', '2026-06-25 11:08:33', NULL),
+(30, 1, 5, 'vansi201', 'VANSI', 'PANDEY', 'vansi201@schoolerp.local', '7007300825', NULL, '$2y$10$7ynbsRe9pjiFNq/jpVOyXe3lQ3280DP5fbkejNGGacqBTzViWPCsa', NULL, NULL, 'female', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, '2026-06-26 07:22:03', '2026-06-26 12:52:03', '2026-06-26 09:22:03');
 
 --
 -- Indexes for dumped tables
@@ -1067,7 +1146,15 @@ ALTER TABLE `admission_form_settings`
 --
 ALTER TABLE `classes`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_class_name` (`class_name`),
   ADD KEY `school_id` (`school_id`);
+
+--
+-- Indexes for table `dashboard_todos`
+--
+ALTER TABLE `dashboard_todos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_school_user` (`school_id`,`user_id`);
 
 --
 -- Indexes for table `expenses`
@@ -1180,7 +1267,8 @@ ALTER TABLE `schools`
 --
 ALTER TABLE `sections`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `school_id` (`school_id`);
+  ADD UNIQUE KEY `uq_class_section` (`class_id`,`section_name`),
+  ADD KEY `sections_ibfk_1` (`school_id`);
 
 --
 -- Indexes for table `students`
@@ -1243,7 +1331,7 @@ ALTER TABLE `teacher_classes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `teacher_id` (`teacher_id`),
   ADD KEY `class_id` (`class_id`),
-  ADD KEY `section_id` (`section_id`);
+  ADD KEY `teacher_classes_ibfk_3` (`section_id`);
 
 --
 -- Indexes for table `transport_routes`
@@ -1276,13 +1364,19 @@ ALTER TABLE `academic_sessions`
 -- AUTO_INCREMENT for table `admission_form_settings`
 --
 ALTER TABLE `admission_form_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `dashboard_todos`
+--
+ALTER TABLE `dashboard_todos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `expenses`
@@ -1366,13 +1460,13 @@ ALTER TABLE `schools`
 -- AUTO_INCREMENT for table `sections`
 --
 ALTER TABLE `sections`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `student_attendance`
@@ -1426,7 +1520,7 @@ ALTER TABLE `transport_routes`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Constraints for dumped tables
@@ -1475,7 +1569,8 @@ ALTER TABLE `parent_students`
 -- Constraints for table `sections`
 --
 ALTER TABLE `sections`
-  ADD CONSTRAINT `sections_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `sections_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sections_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `students`

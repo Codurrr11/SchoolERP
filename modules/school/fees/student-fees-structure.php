@@ -14,11 +14,11 @@ $page_num   = (isset($_GET['page'])  && is_numeric($_GET['page']))  ? intval($_G
 $offset     = ($page_num - 1) * $limit;
 
 // ── Fetch dropdown data ───────────────────────────────────────────────────────
-$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id=:sid ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id=:sid ORDER BY sort_order ASC");
 $stmt->execute([':sid' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id=:sid ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id=:sid ORDER BY sort_order ASC");
 $stmt->execute([':sid' => $school_id]);
 $all_sections = $stmt->fetchAll();
 

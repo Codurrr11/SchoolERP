@@ -41,21 +41,41 @@ if (isset($_GET['get_teacher_details']) && isset($_GET['id'])) {
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM classes WHERE school_id = :school_id");
 $stmt->execute([':school_id' => $school_id]);
 if ($stmt->fetchColumn() == 0) {
-    $default_classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Nursery', 'Class 5'];
-    $stmt_ins = $pdo->prepare("INSERT INTO classes (school_id, name) VALUES (:school_id, :name)");
-    foreach ($default_classes as $cname) {
-        $stmt_ins->execute([':school_id' => $school_id, ':name' => $cname]);
+    $default_classes = [
+        ['class_name' => 'Nursery',  'roman_number' => 'NUR',  'class_code' => 'NUR',  'sort_order' => 0],
+        ['class_name' => 'LKG',      'roman_number' => 'LKG',  'class_code' => 'LKG',  'sort_order' => 1],
+        ['class_name' => 'UKG',      'roman_number' => 'UKG',  'class_code' => 'UKG',  'sort_order' => 2],
+        ['class_name' => 'Class 1',  'roman_number' => 'I',    'class_code' => 'C1',   'sort_order' => 3],
+        ['class_name' => 'Class 2',  'roman_number' => 'II',   'class_code' => 'C2',   'sort_order' => 4],
+        ['class_name' => 'Class 3',  'roman_number' => 'III',  'class_code' => 'C3',   'sort_order' => 5],
+        ['class_name' => 'Class 4',  'roman_number' => 'IV',   'class_code' => 'C4',   'sort_order' => 6],
+        ['class_name' => 'Class 5',  'roman_number' => 'V',    'class_code' => 'C5',   'sort_order' => 7],
+        ['class_name' => 'Class 6',  'roman_number' => 'VI',   'class_code' => 'C6',   'sort_order' => 8],
+        ['class_name' => 'Class 7',  'roman_number' => 'VII',  'class_code' => 'C7',   'sort_order' => 9],
+        ['class_name' => 'Class 8',  'roman_number' => 'VIII', 'class_code' => 'C8',   'sort_order' => 10],
+        ['class_name' => 'Class 9',  'roman_number' => 'IX',   'class_code' => 'C9',   'sort_order' => 11],
+        ['class_name' => 'Class 10', 'roman_number' => 'X',    'class_code' => 'C10',  'sort_order' => 12],
+        ['class_name' => 'Class 11', 'roman_number' => 'XI',   'class_code' => 'C11',  'sort_order' => 13],
+        ['class_name' => 'Class 12', 'roman_number' => 'XII',  'class_code' => 'C12',  'sort_order' => 14],
+    ];
+    $stmt_ins = $pdo->prepare("INSERT INTO classes (school_id, class_name, name, roman_number, class_code, sort_order, status) VALUES (:school_id, :class_name, :name, :roman_number, :class_code, :sort_order, 'active')");
+    foreach ($default_classes as $cls) {
+        $stmt_ins->execute([':school_id' => $school_id, ':class_name' => $cls['class_name'], ':name' => $cls['class_name'], ':roman_number' => $cls['roman_number'], ':class_code' => $cls['class_code'], ':sort_order' => $cls['sort_order']]);
     }
 }
 
-// Ensure sections exist for this school
+// Ensure class-specific sections exist for this school
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM sections WHERE school_id = :school_id");
 $stmt->execute([':school_id' => $school_id]);
 if ($stmt->fetchColumn() == 0) {
-    $default_sections = ['A', 'B'];
-    $stmt_ins = $pdo->prepare("INSERT INTO sections (school_id, name) VALUES (:school_id, :name)");
-    foreach ($default_sections as $sname) {
-        $stmt_ins->execute([':school_id' => $school_id, ':name' => $sname]);
+    $stmt_cls = $pdo->prepare("SELECT id FROM classes WHERE school_id = :school_id");
+    $stmt_cls->execute([':school_id' => $school_id]);
+    $cls_ids = $stmt_cls->fetchAll(PDO::FETCH_COLUMN);
+    $stmt_ins = $pdo->prepare("INSERT INTO sections (school_id, class_id, section_name, name, status) VALUES (:school_id, :class_id, :section_name, :name, 'active')");
+    foreach ($cls_ids as $cls_id) {
+        foreach (['A', 'B'] as $sname) {
+            $stmt_ins->execute([':school_id' => $school_id, ':class_id' => $cls_id, ':section_name' => $sname, ':name' => $sname]);
+        }
     }
 }
 
@@ -92,8 +112,8 @@ if ($stmt->fetchColumn() == 0) {
         $stmt_c = $pdo->prepare("
             SELECT c.id as class_id, s.id as section_id
             FROM classes c
-            JOIN sections s ON s.name = 'A'
-            WHERE c.school_id = :school_id AND c.name IN ('Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5')
+            JOIN sections s ON s.class_id = c.id AND s.section_name = 'A'
+            WHERE c.school_id = :school_id AND c.class_name IN ('Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5')
         ");
         $stmt_c->execute([':school_id' => $school_id]);
         $rows = $stmt_c->fetchAll();
@@ -117,11 +137,11 @@ if ($stmt->fetchColumn() == 0) {
 }
 
 // Load classes and sections for UI select/assignment
-$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM classes WHERE school_id = :school_id ORDER BY sort_order ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_classes = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY id ASC");
+$stmt = $pdo->prepare("SELECT * FROM sections WHERE school_id = :school_id ORDER BY section_name ASC");
 $stmt->execute([':school_id' => $school_id]);
 $all_sections = $stmt->fetchAll();
 
@@ -797,7 +817,7 @@ $teachers_mapped = [];
 foreach ($teachers as $t) {
     // Fetch classes
     $stmt_c = $pdo->prepare("
-        SELECT tc.*, c.name as class_name, s.name as section_name
+        SELECT tc.*, c.class_name as class_name, s.section_name as section_name
         FROM   teacher_classes tc
         JOIN   classes c ON tc.class_id = c.id
         JOIN   sections s ON tc.section_id = s.id

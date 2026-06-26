@@ -439,9 +439,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ==========================================
-  // STUDENT VIEW TAB INITIALIZATION
+  // STUDENT & TEACHER VIEW TAB INITIALIZATION
   // ==========================================
-  const studentTabElement = document.getElementById("studentTab");
+  const studentTabElement = document.getElementById("studentTab") || document.getElementById("teacherTab");
   if (studentTabElement) {
     // Initialize Bootstrap Tab functionality
     const tabButtons = studentTabElement.querySelectorAll(".nav-link");
@@ -3784,18 +3784,18 @@ document.addEventListener("DOMContentLoaded", () => {
               return `
               <tr>
                 <td><span class="cell-counter">${actualIndex}</span></td>
-                <td><span class="fw-bold text-dark">${admissionNo}</span></td>
-                <td><span class="font-secondary">${s.roll_no || "—"}</span></td>
-                <td><span class="fw-bold text-dark">${fullName}</span></td>
-                <td><span>${s.father_name || "—"}</span></td>
-                <td><span>${s.class_name || "—"}</span></td>
-                <td><span>${s.section_name || "—"}</span></td>
+                <td><span class="fw-bold text-dark text-xs">${admissionNo}</span></td>
+                <td><span class="text-xs text-muted">${s.roll_no || "—"}</span></td>
+                <td><span class="student-name-link">${fullName}</span></td>
+                <td><span class="text-xs text-muted">${s.father_name || "—"}</span></td>
+                <td><span class="text-xs fw-semibold text-dark">${s.class_name || "—"}</span></td>
+                <td><span class="text-xs text-muted">${s.section_name || "—"}</span></td>
                 <td class="text-center">
                   <div class="d-flex justify-content-center gap-1">
-                    <a href="print.php?id=${s.id}&format=print" target="_blank" class="btn btn-sm btn-print d-flex align-items-center justify-content-center" title="Print Admission Form">
+                    <a href="print.php?id=${s.id}&format=print" target="_blank" class="teacher-action-btn" title="Print Admission Form">
                       <i class="ph-bold ph-printer"></i>
                     </a>
-                    <a href="print.php?id=${s.id}&format=download" target="_blank" class="btn btn-sm btn-download d-flex align-items-center justify-content-center" title="Download PDF Form">
+                    <a href="print.php?id=${s.id}&format=download" target="_blank" class="teacher-action-btn action-view" title="Download PDF Form">
                       <i class="ph-bold ph-cloud-arrow-down"></i>
                     </a>
                   </div>
@@ -4334,4 +4334,290 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+});
+
+// =============================================================================
+// DASHBOARD: Chart, Assistant, Todos — initialized from #dashboard-data
+// =============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  const dashData = document.getElementById("dashboard-data");
+  if (!dashData) return; // Only run on dashboard page
+
+  const assistantUrl = dashData.dataset.assistantUrl || "";
+  const todosUrl     = dashData.dataset.todosUrl     || "";
+
+  // ── 1. Summary Chart (Chart.js) ──────────────────────────────────────────
+  const summaryCanvas = document.getElementById("summaryChart");
+  if (summaryCanvas && typeof Chart !== "undefined") {
+    try {
+      const months      = JSON.parse(dashData.dataset.chartMonths      || "[]");
+      const collected   = JSON.parse(dashData.dataset.chartCollected    || "[]");
+      const outstanding = JSON.parse(dashData.dataset.chartOutstanding  || "[]");
+
+      new Chart(summaryCanvas, {
+        type: "line",
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: "Fee Collected (₹)",
+              data: collected,
+              borderColor: "#7c6af7",
+              backgroundColor: "rgba(124,106,247,0.10)",
+              borderWidth: 2.5,
+              tension: 0.45,
+              fill: true,
+              pointBackgroundColor: "#7c6af7",
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+            {
+              label: "Outstanding (₹)",
+              data: outstanding,
+              borderColor: "#f87171",
+              backgroundColor: "rgba(248,113,113,0.08)",
+              borderWidth: 2,
+              tension: 0.45,
+              fill: true,
+              pointBackgroundColor: "#f87171",
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: "top",
+              labels: {
+                font: { size: 11, family: "Inter" },
+                boxWidth: 12,
+                padding: 14,
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => " ₹" + Number(ctx.raw).toLocaleString("en-IN"),
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11 }, color: "#9899bb" },
+            },
+            y: {
+              grid: { color: "rgba(120,120,180,0.07)" },
+              ticks: {
+                font: { size: 11 },
+                color: "#9899bb",
+                callback: (v) => "₹" + Number(v).toLocaleString("en-IN"),
+              },
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    } catch (e) {
+      console.warn("Dashboard chart init failed:", e);
+    }
+  }
+
+  // ── 2. Virtual Assistant Chat ─────────────────────────────────────────────
+  const chatInput   = document.getElementById("chatInput");
+  const chatSendBtn = document.getElementById("chatSendBtn");
+  const chatBody    = document.getElementById("chatBody");
+
+  function appendChatBubble(html, isUser) {
+    const div = document.createElement("div");
+    div.className = "chat-bubble" + (isUser ? " chat-bubble-user" : "");
+    div.innerHTML = html + `<span class="time">${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>`;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function sendChatMessage() {
+    if (!chatInput || !assistantUrl) return;
+    const msg = chatInput.value.trim();
+    if (!msg) return;
+    chatInput.value = "";
+    appendChatBubble(msg, true);
+
+    // Typing indicator
+    const typing = document.createElement("div");
+    typing.className = "chat-bubble chat-bubble-typing";
+    typing.innerHTML = `<span class="chat-typing-dots"><span></span><span></span><span></span></span>`;
+    chatBody.appendChild(typing);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    const fd = new FormData();
+    fd.append("query", msg);
+
+    fetch(assistantUrl, { method: "POST", body: fd })
+      .then((r) => r.json())
+      .then((data) => {
+        chatBody.removeChild(typing);
+        appendChatBubble(data.reply || "Sorry, I couldn't understand that.", false);
+      })
+      .catch(() => {
+        chatBody.removeChild(typing);
+        appendChatBubble("⚠️ Could not reach the assistant. Please try again.", false);
+      });
+  }
+
+  if (chatSendBtn) {
+    chatSendBtn.addEventListener("click", sendChatMessage);
+    chatSendBtn.addEventListener("keydown", (e) => e.key === "Enter" && sendChatMessage());
+  }
+  if (chatInput) {
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); sendChatMessage(); }
+    });
+  }
+
+  // ── 3. DB-backed To-Do List ───────────────────────────────────────────────
+  const todoWrapper       = document.getElementById("todoListWrapper");
+  const todoAddToggleBtn  = document.getElementById("todoAddToggleBtn");
+  const todoAddForm       = document.getElementById("todoAddForm");
+  const todoTitleInput    = document.getElementById("todoTitleInput");
+  const todoDueInput      = document.getElementById("todoDueInput");
+  const todoSubmitBtn     = document.getElementById("todoSubmitBtn");
+
+  // Toggle add form visibility
+  if (todoAddToggleBtn && todoAddForm) {
+    todoAddForm.classList.add("todo-add-form-hidden");
+    todoAddToggleBtn.addEventListener("click", () => {
+      todoAddForm.classList.toggle("todo-add-form-hidden");
+      if (!todoAddForm.classList.contains("todo-add-form-hidden")) {
+        todoTitleInput && todoTitleInput.focus();
+      }
+    });
+  }
+
+  // Create a single todo item DOM node
+  function buildTodoItem(id, title, dueLabel, isCompleted) {
+    const item = document.createElement("div");
+    item.className = "todo-item";
+    item.dataset.todoId = id;
+    item.innerHTML = `
+      <div class="todo-left">
+        <div class="todo-check-btn${isCompleted ? " completed" : ""}" data-todo-id="${id}">
+          <i class="ti ti-check"></i>
+        </div>
+        <div class="todo-text-block">
+          <span class="todo-title-txt${isCompleted ? " completed" : ""}">${title.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</span>
+          ${dueLabel ? `<span class="todo-meta-txt">${dueLabel.replace(/</g,"&lt;")}</span>` : ""}
+        </div>
+      </div>
+      <div class="todo-right">
+        <button class="todo-delete-btn" data-todo-id="${id}" title="Delete task" type="button">
+          <i class="ti ti-trash"></i>
+        </button>
+      </div>`;
+    return item;
+  }
+
+  // Remove empty state message if present
+  function clearEmptyMsg() {
+    const msg = document.getElementById("todoEmptyMsg");
+    if (msg) msg.remove();
+  }
+
+  // Add todo via AJAX
+  if (todoSubmitBtn && todoTitleInput && todosUrl) {
+    function submitTodo() {
+      const title    = todoTitleInput.value.trim();
+      const dueLabel = todoDueInput ? todoDueInput.value.trim() : "";
+      if (!title) { todoTitleInput.focus(); return; }
+
+      todoSubmitBtn.disabled = true;
+      const fd = new FormData();
+      fd.append("action", "add");
+      fd.append("title", title);
+      fd.append("due_label", dueLabel);
+
+      fetch(todosUrl, { method: "POST", body: fd })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.success) {
+            clearEmptyMsg();
+            const item = buildTodoItem(data.id, title, dueLabel, false);
+            todoWrapper.insertBefore(item, todoWrapper.firstChild);
+            bindTodoEvents(item);
+            todoTitleInput.value = "";
+            if (todoDueInput) todoDueInput.value = "";
+            todoAddForm && todoAddForm.classList.add("todo-add-form-hidden");
+          }
+        })
+        .catch(() => {})
+        .finally(() => { todoSubmitBtn.disabled = false; });
+    }
+
+    todoSubmitBtn.addEventListener("click", submitTodo);
+    todoTitleInput.addEventListener("keydown", (e) => { if (e.key === "Enter") submitTodo(); });
+  }
+
+  // Bind toggle & delete events to todo items
+  function bindTodoEvents(item) {
+    const checkBtn = item.querySelector(".todo-check-btn");
+    const delBtn   = item.querySelector(".todo-delete-btn");
+    const titleTxt = item.querySelector(".todo-title-txt");
+
+    if (checkBtn && todosUrl) {
+      checkBtn.addEventListener("click", () => {
+        const todoId = checkBtn.dataset.todoId;
+        const fd = new FormData();
+        fd.append("action", "toggle");
+        fd.append("id", todoId);
+        fetch(todosUrl, { method: "POST", body: fd })
+          .then((r) => r.json())
+          .then(() => {
+            checkBtn.classList.toggle("completed");
+            if (titleTxt) titleTxt.classList.toggle("completed");
+          })
+          .catch(() => {});
+      });
+    }
+
+    if (delBtn && todosUrl) {
+      delBtn.addEventListener("click", () => {
+        const todoId = delBtn.dataset.todoId;
+        const fd = new FormData();
+        fd.append("action", "delete");
+        fd.append("id", todoId);
+        fetch(todosUrl, { method: "POST", body: fd })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.success) {
+              item.remove();
+              // Show empty state if no more todos
+              if (todoWrapper && todoWrapper.querySelectorAll(".todo-item").length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "text-center text-muted py-4";
+                empty.id = "todoEmptyMsg";
+                empty.innerHTML = `<i class="ti ti-clipboard-list fs-2 d-block mb-2"></i><span class="text-xs">No tasks yet. Click + to add one!</span>`;
+                todoWrapper.appendChild(empty);
+              }
+            }
+          })
+          .catch(() => {});
+      });
+    }
+  }
+
+  // Bind events to all pre-rendered todo items
+  if (todoWrapper) {
+    todoWrapper.querySelectorAll(".todo-item").forEach(bindTodoEvents);
+  }
+
+  // ── 4. Dashboard avatar sizing ────────────────────────────────────────────
+  const dashAvatar = document.querySelector(".dashboard-avatar-img");
+  if (dashAvatar) {
+    dashAvatar.style.width  = "50px";
+    dashAvatar.style.height = "50px";
+    dashAvatar.style.objectFit = "cover";
+  }
 });
